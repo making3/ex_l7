@@ -1,3 +1,16 @@
 # ExL7
 
-HL7 parsing and mapping tool
+Elixir HL7 quick parsing, mapping, and manipulation library.
+
+## Versioning
+
+TODO - Initial release will need to be created.
+
+## License
+
+TODO
+
+## Acknowledgements
+
+- [medic/L7](https://github.com/medic/L7)
+- [iWT Health](https://www.iwthealth.com/)
