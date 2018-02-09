@@ -50,12 +50,19 @@ defmodule ExL7.Validation do
   end
 
   defp validate_segment(segment_regex, [segment | remaining_segments]) do
-    case Regex.match?(segment_regex, segment) do
+    trimmed_segment = trim_segment(segment)
+
+    case trimmed_segment == "" or Regex.match?(segment_regex, trimmed_segment) do
       true ->
         validate_segment(segment_regex, remaining_segments)
 
       _ ->
         {:error, "Invalid Segment(s)"}
     end
+  end
+
+  defp trim_segment(segment) do
+    segment = Regex.replace(~r/[\r\n\0\t]+$/, segment, "")
+    Regex.replace(~r/^[\r\n\0\t]*/, segment, "")
   end
 end

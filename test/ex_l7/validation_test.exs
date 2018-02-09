@@ -41,6 +41,10 @@ defmodule ExL7.ValidationTest do
       assert validate("MSH|^~\\&|ExL7|iWT Health||1|||ORU^R01||T|2.4\rPID\rXFA") == expected
       assert validate("MSH|^~\\&|ExL7|iWT Health||1|||ORU^R01||T|2.4\rPID|") == expected
       assert validate("MSH:^~\\&:ExL7:iWT Health::1:::ORU^R01::T:2.4\rPID:") == expected
+      assert validate("MSH:^~\\&:ExL7:iWT Health::1:::ORU^R01::T:2.4\rPID:\r") == expected
+      assert validate("MSH:^~\\&:ExL7:iWT Health::1:::ORU^R01::T:2.4\r\nPID:\r") == expected
+      assert validate("MSH|^~\\&|ExL7|iWT Health||1|||ORU^R01||T|2.4\nPID|", "\n") == expected
+      assert validate("MSH|^~\\&|ExL7|iWT Health||1|||ORU^R01||T|2.4\nPID|\r\n", "\n") == expected
     end
   end
 end
