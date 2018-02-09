@@ -3,9 +3,9 @@ defmodule ExL7.Query do
             segment: "",
             repeat: -1,
             field: 0,
-            component: 0,
+            component: -1,
             component_match: %ExL7.Query.ComponentMatch{},
-            sub_component: 0,
+            sub_component: -1,
             is_date: false,
             default_time: false
 end
