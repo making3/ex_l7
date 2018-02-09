@@ -1,6 +1,6 @@
 defmodule ExL7.Field do
   @moduledoc """
-  Documentation for ExL7.Parser
+  Documentation for ExL7.Field
   """
 
   defstruct components: []

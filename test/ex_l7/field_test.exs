@@ -11,6 +11,15 @@ defmodule ExL7.FieldTest do
   end
 
   describe "to_string" do
+    test "single component", context do
+      field = %Field{
+        components: ["PID"]
+      }
+
+      actual = to_string(field, context[:control_characters])
+      assert actual == "PID"
+    end
+
     test "string of components", context do
       field = %Field{
         components: ["acc", "foo", "bar"]
