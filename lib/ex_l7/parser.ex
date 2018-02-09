@@ -15,8 +15,6 @@ defmodule ExL7.Parser do
     file_with_hl7
     |> File.exists?()
     |> read_file(file_with_hl7)
-
-    # TODO: Implementation
   end
 
   defp read_file(false, _file_name) do
