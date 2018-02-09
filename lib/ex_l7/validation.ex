@@ -12,7 +12,13 @@ defmodule ExL7.Validation do
       {:error, "Invalid Header"}
 
   """
-  def validate(hl7, segment_delimiter \\ "\r") when is_binary(hl7) do
+  def validate(hl7, segment_delimiter \\ "\r")
+
+  def validate("", _segment_delimiter) do
+    {:error, "No Data"}
+  end
+
+  def validate(hl7, segment_delimiter) when is_binary(hl7) do
     validate_header(hl7, segment_delimiter)
   end
 
@@ -40,7 +46,7 @@ defmodule ExL7.Validation do
   end
 
   defp validate_segment(_, []) do
-    {:ok, %ExL7.Message{}}
+    {:ok, nil}
   end
 
   defp validate_segment(segment_regex, [segment | remaining_segments]) do

@@ -5,6 +5,11 @@ defmodule ExL7.ValidationTest do
   import ExL7.Validation
 
   describe "validate" do
+    test "no data" do
+      expected = {:error, "No Data"}
+      assert validate("") == expected
+    end
+
     test "invalid header" do
       expected = {:error, "Invalid Header"}
       assert validate("M") == expected
@@ -32,7 +37,7 @@ defmodule ExL7.ValidationTest do
     end
 
     test "valid segments" do
-      expected = {:ok, %ExL7.Message{}}
+      expected = {:ok, nil}
       assert validate("MSH|^~\\&|ExL7|iWT Health||1|||ORU^R01||T|2.4\rPID\rXFA") == expected
       assert validate("MSH|^~\\&|ExL7|iWT Health||1|||ORU^R01||T|2.4\rPID|") == expected
       assert validate("MSH:^~\\&:ExL7:iWT Health::1:::ORU^R01::T:2.4\rPID:") == expected
