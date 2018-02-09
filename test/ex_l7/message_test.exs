@@ -2,7 +2,6 @@ defmodule ExL7.MessageTest do
   use ExUnit.Case
   doctest ExL7.Message
 
-  import ExL7.Message
   alias ExL7.Message
   alias ExL7.Segment
   alias ExL7.Field
@@ -51,7 +50,7 @@ defmodule ExL7.MessageTest do
         ]
       }
 
-      actual = to_string(msg, %ExL7.ControlCharacters{})
+      actual = Message.to_string(msg)
       assert actual == context[:hl7]
     end
   end

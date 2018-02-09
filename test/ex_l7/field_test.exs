@@ -10,6 +10,40 @@ defmodule ExL7.FieldTest do
     {:ok, control_characters: %ExL7.ControlCharacters{}}
   end
 
+  describe "parse" do
+    test "parse single component", context do
+      actual = parse("123", context[:control_characters])
+      assert actual.components === ["123"]
+    end
+
+    test "parse multiple components", context do
+      actual = parse("123^4^abc", context[:control_characters])
+      assert actual.components === ["123", "4", "abc"]
+    end
+
+    test "parse single component with sub components", context do
+      actual = parse("Ross&Bob&MD", context[:control_characters])
+      assert actual.components === [["Ross", "Bob", "MD"]]
+    end
+
+    test "parse multiple components with sub components", context do
+      actual = parse("123^4^abc&7^foo&bar&other", context[:control_characters])
+      assert actual.components === ["123", "4", ["abc", "7"], ["foo", "bar", "other"]]
+    end
+
+    test "parse repeated fields", context do
+      actual =
+        parse(["AttDoc^888^Ross&Bob", "RefDoc^999^Hill&Bobby"], context[:control_characters])
+
+      assert length(actual) == 2
+      bob = Enum.at(actual, 0)
+      assert bob.components === ["AttDoc", "888", ["Ross", "Bob"]]
+
+      bobby = Enum.at(actual, 1)
+      assert bobby.components === ["RefDoc", "999", ["Hill", "Bobby"]]
+    end
+  end
+
   describe "to_string" do
     test "single component", context do
       field = %Field{

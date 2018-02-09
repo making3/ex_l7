@@ -2,8 +2,32 @@ defmodule ExL7.Field do
   @moduledoc """
   Documentation for ExL7.Field
   """
+  alias ExL7.Field
 
   defstruct components: []
+
+  def parse(field_strings, control_characters) when is_list(field_strings) do
+    Enum.map(field_strings, &parse(&1, control_characters))
+  end
+
+  def parse(field_string, control_characters) do
+    %Field{components: do_parse(field_string, control_characters)}
+  end
+
+  def do_parse(field_string, control_characters) do
+    field_string
+    |> String.split(control_characters.component)
+    |> Enum.map(&parse_sub_components(&1, control_characters))
+  end
+
+  defp parse_sub_components(component, control_characters) do
+    sub_components = String.split(component, control_characters.sub_component)
+
+    case length(sub_components) do
+      1 -> Enum.at(sub_components, 0)
+      _ -> sub_components
+    end
+  end
 
   def to_string(field, control_characters) do
     field.components

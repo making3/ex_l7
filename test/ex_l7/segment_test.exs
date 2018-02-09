@@ -6,6 +6,33 @@ defmodule ExL7.SegmentTest do
   alias ExL7.Segment
   alias ExL7.Field
 
+  describe "parse" do
+    test "parse single field" do
+      actual = parse("PID|foo", %ExL7.ControlCharacters{})
+      assert length(actual.fields) == 2
+
+      pid = Enum.at(actual.fields, 0)
+      assert pid.components == ["PID"]
+
+      foo = Enum.at(actual.fields, 1)
+      assert foo.components == ["foo"]
+    end
+
+    test "parse repeated fields" do
+      actual = parse("PID|foo~bar~test", %ExL7.ControlCharacters{})
+      assert length(actual.fields) == 2
+
+      pid = Enum.at(actual.fields, 0)
+      assert pid.components == ["PID"]
+
+      repeated = Enum.at(actual.fields, 1)
+      assert length(repeated) == 3
+      assert Enum.at(repeated, 0).components == ["foo"]
+      assert Enum.at(repeated, 1).components == ["bar"]
+      assert Enum.at(repeated, 2).components == ["test"]
+    end
+  end
+
   describe "get_id" do
     test "should return the first field" do
       segment = %Segment{fields: [%Field{components: ["PID"]}]}

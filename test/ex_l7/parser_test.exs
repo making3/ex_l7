@@ -59,4 +59,38 @@ defmodule ExL7.ParserTest do
       File.rm(file_name)
     end
   end
+
+  describe "parse" do
+    setup do
+      hl7 =
+        "MSH|^~\\&|ExL7|iWT Health||1|||ORU^R01||T|2.4\r" <>
+          "PID|123^MR~456^AN|AttDoc^888^Ross&Bob~RefDoc^999^Hill&Bobby\r" <>
+          "OBX|1|doc^foo\r" <> "OBX|2|doc^idk"
+
+      {:ok, hl7: hl7}
+    end
+
+    test "get new ExL7.Message", context do
+      {:ok, message} = parse(context[:hl7])
+      assert message.timezone == "UTC"
+      assert length(message.segments) == 4
+
+      msh_fields = Enum.at(message.segments, 0)
+      assert length(msh_fields.fields) == 12
+
+      pid_fields = Enum.at(message.segments, 1)
+      assert length(pid_fields.fields) == 3
+
+      obx1_fields = Enum.at(message.segments, 2)
+      assert length(obx1_fields.fields) == 3
+
+      obx2_fields = Enum.at(message.segments, 3)
+      assert length(obx2_fields.fields) == 3
+    end
+
+    test "set timezone on ExL7 Message", context do
+      {:ok, result} = parse(context[:hl7], "\r", "America/Chicago")
+      assert result.timezone == "America/Chicago"
+    end
+  end
 end

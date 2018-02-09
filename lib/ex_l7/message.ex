@@ -12,13 +12,13 @@ defmodule ExL7.Message do
     {:ok, query} = QueryParser.parse(query_string)
   end
 
-  def to_string(message, control_characters) do
+  def to_string(message) do
     hl7 =
       message.segments
-      |> Enum.map(&Segment.to_string(&1, control_characters))
-      |> Enum.join(control_characters.segment)
+      |> Enum.map(&Segment.to_string(&1, message.control_characters))
+      |> Enum.join(message.control_characters.segment)
 
     # Messages always end with a segment control character, usually a line feed ending
-    hl7 <> control_characters.segment
+    hl7 <> message.control_characters.segment
   end
 end
