@@ -4,8 +4,7 @@ defmodule ExL7.ParserTest do
 
   import ExL7.Parser
 
-  describe "parse" do
-    # TODO: Implementation
+  describe "validations" do
     test "fail with an empty hl7" do
       expected = {:error, "No Data"}
       assert parse("") == expected
@@ -28,6 +27,36 @@ defmodule ExL7.ParserTest do
       assert parse("MSH|^~\\&|ExL7|iWT Health||1|||ORU^R01||T|2.4\rPID:234") == expected
       assert parse("MSH|^~\\&|ExL7|iWT Health||1|||ORU^R01||T|2.4\rPID234") == expected
       assert parse("MSH|^~\\&|ExL7|iWT Health||1|||ORU^R01||T|2.4\rPID123|123|") == expected
+    end
+  end
+
+  describe "read file" do
+    test "invalid file" do
+      expected = {:error, "Invalid File"}
+      assert parse_file("/tmp/foobar2000") == expected
+    end
+
+    test "no data" do
+      file_name = ".no_data_hl7"
+      {:ok, file} = File.open(file_name, [:write])
+      File.close(file)
+
+      expected = {:error, "No Data"}
+      assert parse_file(file_name) == expected
+
+      File.rm(file_name)
+    end
+
+    test "invalid hl7" do
+      file_name = ".invalid_hl7"
+      {:ok, file} = File.open(file_name, [:write])
+      IO.binwrite(file, "MSH|")
+      File.close(file)
+
+      expected = {:error, "Invalid Header"}
+      assert parse_file(file_name) == expected
+
+      File.rm(file_name)
     end
   end
 end
