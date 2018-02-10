@@ -12,6 +12,9 @@ defmodule ExL7.Validation do
       {:error, "Invalid Header"}
 
   """
+
+  alias ExL7.Trimmer
+
   def validate(hl7, segment_delimiter \\ "\r")
 
   def validate("", _segment_delimiter) do
@@ -50,7 +53,7 @@ defmodule ExL7.Validation do
   end
 
   defp validate_segment(segment_regex, [segment | remaining_segments]) do
-    trimmed_segment = trim_segment(segment)
+    trimmed_segment = Trimmer.trim_segment(segment)
 
     case trimmed_segment == "" or Regex.match?(segment_regex, trimmed_segment) do
       true ->
@@ -59,10 +62,5 @@ defmodule ExL7.Validation do
       _ ->
         {:error, "Invalid Segment(s)"}
     end
-  end
-
-  defp trim_segment(segment) do
-    segment = Regex.replace(~r/[\r\n\0\t]+$/, segment, "")
-    Regex.replace(~r/^[\r\n\0\t]*/, segment, "")
   end
 end

@@ -6,6 +6,7 @@ defmodule ExL7.Parser do
   import ExL7.Validation
   alias ExL7.Message
   alias ExL7.Segment
+  alias ExL7.Trimmer
   alias ExL7.ControlCharacters
 
   def parse(hl7_string, segment_delimiter \\ "\r", timezone \\ "UTC") do
@@ -23,6 +24,7 @@ defmodule ExL7.Parser do
     segments =
       hl7
       |> String.split(segment_delimiter)
+      |> Enum.map(&Trimmer.trim_segment/1)
       |> Enum.map(&Segment.parse(&1, control_characters))
 
     {:ok,
