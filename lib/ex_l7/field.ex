@@ -31,10 +31,10 @@ defmodule ExL7.Field do
 
   def to_string(fields, control_characters) when is_list(fields) do
     # TODO: Test
+    # TODO: Should I dump an array of fields or return it as a full string?
+
     fields
     |> Enum.map(&to_string(&1, control_characters))
-
-    # |> Enum.join(control_characters.repeat)
   end
 
   def to_string(field, control_characters) do

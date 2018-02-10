@@ -8,7 +8,7 @@ defmodule ExL7.QueryTest do
   setup do
     {:ok, parsed} =
       Parser.parse(
-        "MSH|^~\\&|Sora|iWT Health||1|20150912110538||ORU^R01|5555|T|2.4\r" <>
+        "MSH|^~\\&|Sora|iWT Health||1|20150912110538||ORU^R01|5555^4444&P&FF|T|2.4\r" <>
           "PID|123^MR~456^AN~~foo^lots^333^234^^more|AttDoc^888^Ross&Bob~RefDoc^999^Hill&Bobby~Spaced Value^777^Rosser&Bobber||testvalue\r" <>
           "OBX|1|doc^foo\r" <>
           "OBX|2|doc^idk\r\n" <>
@@ -33,6 +33,11 @@ defmodule ExL7.QueryTest do
     test "basic query - component", context do
       actual = query(context[:parsed], "MSH|8^1")
       assert actual == "R01"
+    end
+
+    test "basic query - sub_component", context do
+      actual = query(context[:parsed], "MSH|9^1&2")
+      assert actual == "FF"
     end
 
     test "large numbers", context do
@@ -90,7 +95,6 @@ defmodule ExL7.QueryTest do
 
     test "123^MR from PID|1(1,MR)", context do
       actual = query(context[:parsed], "PID|1(1,MR)")
-      IO.inspect(actual, label: "actual")
       assert actual == "123^MR"
     end
 

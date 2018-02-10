@@ -4,6 +4,7 @@ defmodule ExL7.Query do
   """
   alias ExL7.Segment
   alias ExL7.Field
+  alias ExL7.Component
   alias ExL7.QueryParser
 
   defstruct all_segments: false,
@@ -17,9 +18,7 @@ defmodule ExL7.Query do
             default_time: false
 
   def query(message, query_string, _date_time_format \\ "TODO") do
-    IO.inspect(query_string, label: "qs")
     {:ok, query} = QueryParser.parse(query_string)
-    IO.inspect(query, label: "query")
     query_segment(message, query)
   end
 
@@ -40,25 +39,47 @@ defmodule ExL7.Query do
   end
 
   defp query_field(message, segment, query) do
-    IO.inspect(segment.fields, label: "fields")
-
     case Enum.at(segment.fields, query.field) do
       nil -> ""
       field -> query_component(message, field, query)
     end
   end
 
-  # defp query_component(message, field, query = %{all_segments: true, component: -1}) do
-  #   field
-  # end
-
   defp query_component(message, field, query) do
-    IO.inspect(field, label: "comp")
+    cond do
+      query.component_match.component > -1 ->
+        matched_field = match_field(field, query.component_match)
+        foo(message, matched_field, query)
 
-    if query.component < 0 do
-      Field.to_string(field, message.control_characters)
-    else
-      find_component(message, field, query)
+      true ->
+        foo(message, field, query)
+    end
+  end
+
+  defp match_field(fields, component_match) when is_list(fields) do
+    Enum.find(fields, &match_component(&1, component_match))
+  end
+
+  defp match_field(field, component_match) do
+    if match_component(field, component_match) do
+      field
+    end
+  end
+
+  def match_component(field, component_match) do
+    Enum.at(field.components, component_match.component) == component_match.value
+  end
+
+  defp foo(message, field, query) do
+    cond do
+      field == nil ->
+        ""
+
+      query.component < 0 ->
+        Field.to_string(field, message.control_characters)
+
+      true ->
+        find_component(message, field, query)
     end
   end
 
@@ -75,7 +96,15 @@ defmodule ExL7.Query do
   defp find_component(message, field, query) do
     case Enum.at(field.components, query.component) do
       nil -> Field.to_string(field, message.control_characters)
-      component -> component
+      component -> find_sub_component(message, component, query)
+    end
+  end
+
+  defp find_sub_component(message, component, query) do
+    if query.sub_component < 0 do
+      Component.to_string(component, message.control_characters)
+    else
+      Enum.at(component, query.sub_component)
     end
   end
 end
