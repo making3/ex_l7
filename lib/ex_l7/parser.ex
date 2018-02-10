@@ -9,49 +9,51 @@ defmodule ExL7.Parser do
   alias ExL7.Trimmer
   alias ExL7.ControlCharacters
 
-  def parse(hl7_string, segment_delimiter \\ "\r", timezone \\ "UTC") do
-    # TODO: Cleanup a bit
-    validate(hl7_string, segment_delimiter)
-    |> do_parse(hl7_string, segment_delimiter, timezone)
+  def parse(hl7, segment_delimiter \\ "\r", timezone \\ "UTC") do
+    case validate(hl7, segment_delimiter) do
+      {:ok, _} ->
+        do_parse(hl7, segment_delimiter, timezone)
+
+      error_result = {:error, _} ->
+        error_result
+    end
   end
 
-  defp do_parse(err_result = {:error, _}, _hl7, _segment_delimiter, _timezone) do
-    err_result
-  end
-
-  defp do_parse({:ok, _}, hl7, segment_delimiter, timezone) do
+  defp do_parse(hl7, segment_delimiter, timezone) do
     control_characters = ControlCharacters.get_control_characters(hl7, segment_delimiter)
-
-    segments =
-      hl7
-      |> String.split(segment_delimiter)
-      |> Enum.map(&Trimmer.trim_segment/1)
-      |> Enum.map(&Segment.parse(&1, control_characters))
 
     {:ok,
      %Message{
-       segments: segments,
+       segments: get_segments(hl7, segment_delimiter, control_characters),
        control_characters: control_characters,
        timezone: timezone
      }}
   end
 
+  defp get_segments(hl7, segment_delimiter, control_characters) do
+    hl7
+    |> String.split(segment_delimiter)
+    |> Enum.map(&Trimmer.trim_segment/1)
+    |> Enum.map(&Segment.parse(&1, control_characters))
+  end
+
   def parse_file(file_with_hl7, segment_delimiter \\ "\r", timezone \\ "UTC") do
-    file_with_hl7
-    |> File.exists?()
-    |> read_file(file_with_hl7, segment_delimiter, timezone)
+    case read_file(file_with_hl7) do
+      {:ok, hl7} -> parse(hl7, segment_delimiter, timezone)
+      error -> error
+    end
   end
 
-  defp read_file(false, _file_name, _segment_delimiter, _timezone) do
-    {:error, "Invalid File"}
-  end
-
-  defp read_file(true, file_name, segment_delimiter, timezone) do
-    {:ok, file} = File.open(file_name, [:read])
-
-    case IO.read(file, :all) do
+  defp read_file(file_name) do
+    with true <- File.exists?(file_name),
+         {:ok, file} <- File.open(file_name, [:read]),
+         hl7 <- IO.read(file, :all) do
+      {:ok, hl7}
+    else
+      false -> {:error, "Invalid File"}
       :eof -> {:error, "No Data"}
-      hl7 -> parse(hl7, segment_delimiter, timezone)
+      {:error, error} -> {:error, error}
+      error -> {:error, error}
     end
   end
 end
