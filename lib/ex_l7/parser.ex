@@ -11,7 +11,7 @@ defmodule ExL7.Parser do
 
   def parse(hl7_string, segment_delimiter \\ "\r", timezone \\ "UTC") do
     # TODO: Cleanup a bit
-    validate(hl7_string)
+    validate(hl7_string, segment_delimiter)
     |> do_parse(hl7_string, segment_delimiter, timezone)
   end
 
