@@ -10,6 +10,7 @@ defmodule ExL7.Parser do
   alias ExL7.ControlCharacters
 
   def parse(hl7_string, segment_delimiter \\ "\r", timezone \\ "UTC") do
+    # TODO: Cleanup a bit
     validate(hl7_string)
     |> do_parse(hl7_string, segment_delimiter, timezone)
   end

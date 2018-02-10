@@ -29,6 +29,14 @@ defmodule ExL7.Field do
     end
   end
 
+  def to_string(fields, control_characters) when is_list(fields) do
+    # TODO: Test
+    fields
+    |> Enum.map(&to_string(&1, control_characters))
+
+    # |> Enum.join(control_characters.repeat)
+  end
+
   def to_string(field, control_characters) do
     field.components
     |> Enum.map(&join_sub_components(&1, control_characters))
