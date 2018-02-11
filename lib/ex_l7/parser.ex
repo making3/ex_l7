@@ -14,25 +14,29 @@ defmodule ExL7.Parser do
   @doc ~S"""
   Parses an HL7 message into an ExL7.Message for ExL7 usage. Validates first.
     For validation examples, check ExL7.Validation.validate.
+
+    ## Parameters
+
+    - hl7: The HL7 message to parse.
+    - segment_delimiter: An alternative value other than \\r to split message segments.
   """
-  def parse(hl7, segment_delimiter \\ "\r", timezone \\ "UTC") do
+  def parse(hl7, segment_delimiter \\ "\r") do
     case validate(hl7, segment_delimiter) do
       {:ok, _} ->
-        do_parse(hl7, segment_delimiter, timezone)
+        do_parse(hl7, segment_delimiter)
 
       error_result = {:error, _} ->
         error_result
     end
   end
 
-  defp do_parse(hl7, segment_delimiter, timezone) do
+  defp do_parse(hl7, segment_delimiter) do
     control_characters = ControlCharacters.get_control_characters(hl7, segment_delimiter)
 
     {:ok,
      %Message{
        segments: get_segments(hl7, segment_delimiter, control_characters),
-       control_characters: control_characters,
-       timezone: timezone
+       control_characters: control_characters
      }}
   end
 
@@ -43,9 +47,9 @@ defmodule ExL7.Parser do
     |> Enum.map(&Segment.parse(&1, control_characters))
   end
 
-  def parse_file(file_with_hl7, segment_delimiter \\ "\r", timezone \\ "UTC") do
+  def parse_file(file_with_hl7, segment_delimiter \\ "\r") do
     case read_file(file_with_hl7) do
-      {:ok, hl7} -> parse(hl7, segment_delimiter, timezone)
+      {:ok, hl7} -> parse(hl7, segment_delimiter)
       error -> error
     end
   end

@@ -4,7 +4,7 @@ defmodule ExL7.Message do
   """
   alias ExL7.Segment
 
-  defstruct segments: [], timezone: "UTC", control_characters: %ExL7.ControlCharacters{}
+  defstruct segments: [], control_characters: %ExL7.ControlCharacters{}
 
   def to_string(message) do
     hl7 =
