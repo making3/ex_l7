@@ -1,20 +1,34 @@
 defmodule ExL7.Validation do
   @moduledoc """
-  Documentation for ExL7.Validation
-  """
-
-  @doc """
-  Validates an HL7
-
-  ## Examples
-
-      iex> ExL7.Validation.validate("M")
-      {:error, "Invalid Header"}
-
+  Module to check if HL7 messages are valid.
   """
 
   alias ExL7.Trimmer
 
+  @doc ~S"""
+  Checks if an HL7 message is valid.
+
+  ## Examples
+
+      iex> ExL7.Validation.validate("")
+      {:error, "No Data"}
+
+      iex> ExL7.Validation.validate("MSH|")
+      {:error, "Invalid Header"}
+
+      iex> ExL7.Validation.validate("MSH|")
+      {:error, "Invalid Header"}
+
+      iex> ExL7.Validation.validate("MSH|^~\\&|ExL7|iWT Health||1|||ORU^R01||T|2.4")
+      {:error, "No Segments Found"}
+
+      iex> ExL7.Validation.validate("MSH|^~\\&|ExL7|iWT Health||1|||ORU^R01||T|2.4\rPI\rPIDD")
+      {:error, "Invalid Segment(s)"}
+
+      iex> ExL7.Validation.validate("MSH|^~\\&|ExL7|iWT Health||1|||ORU^R01||T|2.4\rPID\rXFA")
+      {:ok, nil}
+
+  """
   def validate(hl7, segment_delimiter \\ "\r")
 
   def validate("", _segment_delimiter) do
@@ -49,6 +63,7 @@ defmodule ExL7.Validation do
   end
 
   defp validate_segment(_, []) do
+    # TODO: Should something specific be returned? Segments maybe?
     {:ok, nil}
   end
 

@@ -1,6 +1,8 @@
 defmodule ExL7.Parser do
   @moduledoc """
-  Documentation for ExL7.Parser
+  Parses an HL7 message and returns an ExL7.Message that can be ran under
+    ExL7.Query to return data, ExL7.Ack to generate an acknowledgement for the
+    message, or ExL7.Transform to modify the message.
   """
 
   import ExL7.Validation
@@ -9,6 +11,10 @@ defmodule ExL7.Parser do
   alias ExL7.Trimmer
   alias ExL7.ControlCharacters
 
+  @doc ~S"""
+  Parses an HL7 message into an ExL7.Message for ExL7 usage. Validates first.
+    For validation examples, check ExL7.Validation.validate.
+  """
   def parse(hl7, segment_delimiter \\ "\r", timezone \\ "UTC") do
     case validate(hl7, segment_delimiter) do
       {:ok, _} ->
