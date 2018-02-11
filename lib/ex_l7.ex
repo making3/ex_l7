@@ -1,6 +1,6 @@
 defmodule ExL7 do
   @moduledoc """
-  HL7 parsing and querying application
+  Lightweight HL7 parsing, validation, querying, and transformation library.
   """
 
   @doc ~S"""
