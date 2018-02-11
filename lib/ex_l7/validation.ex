@@ -8,6 +8,11 @@ defmodule ExL7.Validation do
   @doc ~S"""
   Checks if an HL7 message is valid.
 
+  ## Parameters
+
+  - hl7: HL7 message to validate.
+  - segment_delimiter: An alternative value other than \\r to split message segments.
+
   ## Examples
 
       iex> ExL7.Validation.validate("")

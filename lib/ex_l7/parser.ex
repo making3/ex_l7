@@ -1,8 +1,8 @@
 defmodule ExL7.Parser do
   @moduledoc """
-  Parses an HL7 message and returns an ExL7.Message that can be ran under
-    ExL7.Query to return data, ExL7.Ack to generate an acknowledgement for the
-    message, or ExL7.Transform to modify the message.
+  Module for HL7 message parsing in order to use ExL7.Query to return data,
+    ExL7.Ack to generate an acknowledgement for the message, or ExL7.Transform
+    to modify a message.
   """
 
   import ExL7.Validation
@@ -17,7 +17,7 @@ defmodule ExL7.Parser do
 
     ## Parameters
 
-    - hl7: The HL7 message to parse.
+    - hl7: HL7 message to parse.
     - segment_delimiter: An alternative value other than \\r to split message segments.
   """
   def parse(hl7, segment_delimiter \\ "\r") do
