@@ -1,11 +1,19 @@
 defmodule ExL7.Message do
   @moduledoc """
-  Documentation for ExL7.Message
+  Structure and Helper functions for a ExL7 parsed HL7 message
   """
+
   alias ExL7.Segment
 
   defstruct segments: [], control_characters: %ExL7.ControlCharacters{}
 
+  @doc ~S"""
+
+  ## Parameters
+  Returns an HL7 message from an ExL7.Message.
+
+  - message: ExL7 message to dump as a string
+  """
   def to_string(message) do
     hl7 =
       message.segments

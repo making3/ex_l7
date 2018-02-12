@@ -4,6 +4,7 @@ defmodule ExL7.Component do
   """
 
   @doc ~S"""
+  Returns a string with sub components joined together, if any.
 
   ## Parameters
 
