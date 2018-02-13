@@ -9,48 +9,48 @@ defmodule ExL7.Message.Header do
     chars.component <> chars.repeat <> chars.escape <> chars.sub_component
   end
 
-  def get_sending_application(l7_message = %ExL7.Message{}) do
+  def get_sending_application(%ExL7.Message{} = l7_message) do
     query(l7_message, "MSH|2")
   end
 
-  def get_sending_facility(l7_message = %ExL7.Message{}) do
+  def get_sending_facility(%ExL7.Message{} = l7_message) do
     query(l7_message, "MSH|3")
   end
 
-  def get_receiving_application(l7_message = %ExL7.Message{}) do
+  def get_receiving_application(%ExL7.Message{} = l7_message) do
     query(l7_message, "MSH|4")
   end
 
-  def get_receiving_facility(l7_message = %ExL7.Message{}) do
+  def get_receiving_facility(%ExL7.Message{} = l7_message) do
     query(l7_message, "MSH|5")
   end
 
-  def get_date_time(l7_message = %ExL7.Message{}) do
+  def get_date_time(%ExL7.Message{} = l7_message) do
     # TODO: Date Time formatting
     query(l7_message, "MSH|6")
   end
 
-  def get_security(l7_message = %ExL7.Message{}) do
+  def get_security(%ExL7.Message{} = l7_message) do
     query(l7_message, "MSH|7")
   end
 
-  def get_message_type(l7_message = %ExL7.Message{}) do
+  def get_message_type(%ExL7.Message{} = l7_message) do
     query(l7_message, "MSH|8^0")
   end
 
-  def get_message_event(l7_message = %ExL7.Message{}) do
+  def get_message_event(%ExL7.Message{} = l7_message) do
     query(l7_message, "MSH|8^1")
   end
 
-  def get_control_id(l7_message = %ExL7.Message{}) do
+  def get_control_id(%ExL7.Message{} = l7_message) do
     query(l7_message, "MSH|9")
   end
 
-  def get_processing_id(l7_message = %ExL7.Message{}) do
+  def get_processing_id(%ExL7.Message{} = l7_message) do
     query(l7_message, "MSH|10")
   end
 
-  def get_version(l7_message = %ExL7.Message{}) do
+  def get_version(%ExL7.Message{} = l7_message) do
     query(l7_message, "MSH|11")
   end
 end
