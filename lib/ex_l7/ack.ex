@@ -5,18 +5,30 @@ defmodule ExL7.Ack do
 
   import ExL7.Message.Header
 
+  @doc """
+  Returns an HL7 acknowledgement message as a string
+  """
   def ack(%ExL7.Message{} = l7_message) do
     get_ack_hl7(l7_message, "AA")
   end
 
+  @doc """
+  Returns an HL7 negative acknowledgement message as a string with AE as the code.
+  """
   def error(%ExL7.Message{} = l7_message, reason \\ "") do
     get_ack_hl7(l7_message, "AE", reason)
   end
 
+  @doc """
+  Returns an HL7 negative acknowledgement message as a string with AR as the code.
+  """
   def reject(%ExL7.Message{} = l7_message, reason \\ "") do
     get_ack_hl7(l7_message, "AR", reason)
   end
 
+  @doc """
+  Returns an HL7 negative acknowledgement message as a string with a custom code
+  """
   def other(%ExL7.Message{} = l7_message, code, reason \\ "") do
     get_ack_hl7(l7_message, code, reason)
   end

@@ -109,4 +109,34 @@ defmodule ExL7.AckTest do
       assert query(actual, "MSA|3") == "bad msh"
     end
   end
+
+  describe "other" do
+    test "generate custom ack an hl7 with no reason", context do
+      nak_string = other(context[:l7_message], "AZ")
+      {:ok, actual} = ExL7.parse(nak_string)
+
+      assert query(actual, "MSH|2") == "RandomApp"
+      assert query(actual, "MSH|3") == "Fac2"
+      assert query(actual, "MSH|4") == "ExL7"
+      assert query(actual, "MSH|5") == "iWT Health"
+      assert query(actual, "MSH|7") == ""
+      assert query(actual, "MSH|8") == "ACK^R01"
+      assert query(actual, "MSH|9") == "AF456"
+      assert query(actual, "MSH|10") == "T"
+      assert query(actual, "MSH|11") == "2.4"
+
+      assert query(actual, "MSA|1") == "AZ"
+      assert query(actual, "MSA|2") == "AF456"
+      assert query(actual, "MSA|3") == ""
+    end
+
+    test "generate custom ack an hl7 with reason", context do
+      nak_string = other(context[:l7_message], "RR", "random response")
+      {:ok, actual} = ExL7.parse(nak_string)
+
+      assert query(actual, "MSA|1") == "RR"
+      assert query(actual, "MSA|2") == "AF456"
+      assert query(actual, "MSA|3") == "random response"
+    end
+  end
 end
