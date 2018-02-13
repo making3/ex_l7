@@ -1,11 +1,20 @@
 defmodule ExL7.Field do
   @moduledoc """
-  Documentation for ExL7.Field
+  Structure and Helper functions for a HL7 (ExL7.Message) field
   """
+
   alias ExL7.Field
 
   defstruct components: []
 
+  @doc ~S"""
+  Returns an ExL7.Field from a given list of strings
+
+  ## Parameters
+
+  - field_strings: String or list of strings that represent an HL7 field.
+  - control_characters: ExL7.ControlCharacters used to parse components
+  """
   def parse(field_strings, control_characters) when is_list(field_strings) do
     Enum.map(field_strings, &parse(&1, control_characters))
   end
@@ -14,7 +23,7 @@ defmodule ExL7.Field do
     %Field{components: do_parse(field_string, control_characters)}
   end
 
-  def do_parse(field_string, control_characters) do
+  defp do_parse(field_string, control_characters) do
     field_string
     |> String.split(control_characters.component)
     |> Enum.map(&parse_sub_components(&1, control_characters))
@@ -29,10 +38,15 @@ defmodule ExL7.Field do
     end
   end
 
-  def to_string(fields, control_characters) when is_list(fields) do
-    # TODO: Test
-    # TODO: Should I dump an array of fields or return it as a full string?
+  @doc ~S"""
+  Returns one or many HL7 field strings representation from one or many ExL7.Fields.
 
+  ## Parameters
+
+  - fields: One or many ExL7.Field maps
+  - control_characters: ExL7.ControlCharacters used to join fields, components, and sub components.
+  """
+  def to_string(fields, control_characters) when is_list(fields) do
     fields
     |> Enum.map(&to_string(&1, control_characters))
   end
