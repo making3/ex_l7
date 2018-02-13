@@ -22,7 +22,11 @@ defmodule ExL7.Ack do
   end
 
   def error(%ExL7.Ack.Config{} = ack_config, sequence, reason) do
-    get_ack_hl7(ack_config, sequence, "AR", reason)
+    get_ack_hl7(ack_config, sequence, "AE", reason)
+  end
+
+  def default_error(sequence, reason \\ "") do
+    error(%ExL7.Ack.Config{}, sequence, reason)
   end
 
   @doc """
@@ -38,6 +42,10 @@ defmodule ExL7.Ack do
     get_ack_hl7(ack_config, sequence, "AR", reason)
   end
 
+  def default_reject(sequence, reason \\ "") do
+    reject(%ExL7.Ack.Config{}, sequence, reason)
+  end
+
   @doc """
   Returns an HL7 negative acknowledgement message as a string with a custom code
   """
@@ -51,9 +59,14 @@ defmodule ExL7.Ack do
     get_ack_hl7(ack_config, sequence, code, reason)
   end
 
-  defp get_ack_hl7(%ExL7.Message{} = l7_message, sequence, code, reason \\ "") do
-    get_msh_segment(l7_message, sequence) <>
-      l7_message.control_characters.segment <> get_msa_segment(l7_message, code, reason)
+  def default_other(sequence, reason \\ "") do
+    other(%ExL7.Ack.Config{}, sequence, reason)
+  end
+
+  defp get_ack_hl7(l7_message_or_ack_config, sequence, code, reason \\ "") do
+    get_msh_segment(l7_message_or_ack_config, sequence) <>
+      l7_message_or_ack_config.control_characters.segment <>
+      get_msa_segment(l7_message_or_ack_config, code, reason)
   end
 
   defp get_msh_segment(%ExL7.Ack.Config{} = ack_config, sequence) do
@@ -62,7 +75,7 @@ defmodule ExL7.Ack do
         "MSH",
         get_control_characters(ack_config.control_characters),
         ack_config.sending_application,
-        ack_config.sending_application,
+        ack_config.sending_facility,
         "",
         "",
         ExL7.Ack.Config.get_current_date_time(),

@@ -4,6 +4,8 @@ Elixir HL7 quick parsing, mapping, and manipulation library.
 
 ## Examples
 
+### Parsing
+
     hl7 =
       "MSH|^~\\&|ExL7|iWT Health||1|||ORU^R01||T|2.4\r" <>
         "PID|123^MR~456^AN|AttDoc^888^Ross&Bob~RefDoc^999^Hill&Bobby\r" <>
@@ -25,17 +27,33 @@ Elixir HL7 quick parsing, mapping, and manipulation library.
     # To return the original message
     "MSH|^....." = ExL7.Message.to_string(e_message)
 
-    # Acknowledgement Responses
-    ExL7.Ack.acknowledge(e_message)
+### Acknowledgement
 
-    ExL7.Ack.error(e_message)
-    ExL7.Ack.error(e_message, "reason")
+    # Start a Sequence Agent to generate sequences (or use your own custom sequences)
+    sequencer = ExL7.Ack.Sequence.start_link()
+    sequence_id = ExL7.get_next(sequencer)
 
-    ExL7.Ack.reject(e_message)
-    ExL7.Ack.reject(e_message, "reason")
+    ExL7.Ack.acknowledge(e_message, sequence_id)
 
-    ExL7.Ack.other(e_message, "AZ")
-    ExL7.Ack.other(e_message, "AZ", "other reason")
+    ack_config = %ExL7.Config.Ack{}
+
+    # App Error Responses
+    ExL7.Ack.error(ack_config, sequence_id)
+    ExL7.Ack.error(ack_config, sequence_id, "server down")
+
+    ExL7.Ack.default_error(sequence_id)
+    ExL7.Ack.default_error(sequence_id, "server down")
+
+    # App Rejection Responses
+    ExL7.Ack.reject(ack_config, sequence_id)
+    ExL7.Ack.reject(ack_config, sequence_id, "bad msh")
+
+    ExL7.Ack.default_reject(sequence_id)
+    ExL7.Ack.default_reject(sequence_id, "bad msh")
+
+    # Custom Responses
+    ExL7.Ack.other("AZ", sequence_id)
+    ExL7.Ack.other("AZ", sequence_id, "other reason")
 
 ## Versioning
 
