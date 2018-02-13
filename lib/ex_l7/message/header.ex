@@ -6,6 +6,10 @@ defmodule ExL7.Message.Header do
   import ExL7.Query
 
   def get_control_characters(%ExL7.Message{control_characters: chars}) do
+    get_control_characters(chars)
+  end
+
+  def get_control_characters(%ExL7.ControlCharacters{} = chars) do
     chars.component <> chars.repeat <> chars.escape <> chars.sub_component
   end
 

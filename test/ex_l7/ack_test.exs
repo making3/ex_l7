@@ -17,7 +17,7 @@ defmodule ExL7.AckTest do
 
   describe "ack" do
     test "generate ack hl7", context do
-      ack_string = acknowledge(context[:l7_message])
+      ack_string = acknowledge(context[:l7_message], "seq1")
       {:ok, actual} = ExL7.parse(ack_string)
 
       assert query(actual, "MSH|2") == "RandomApp"
@@ -26,7 +26,7 @@ defmodule ExL7.AckTest do
       assert query(actual, "MSH|5") == "iWT Health"
       assert query(actual, "MSH|7") == ""
       assert query(actual, "MSH|8") == "ACK^R01"
-      assert query(actual, "MSH|9") == "AF456"
+      assert query(actual, "MSH|9") == "seq1"
       assert query(actual, "MSH|10") == "T"
       assert query(actual, "MSH|11") == "2.4"
 
@@ -42,7 +42,7 @@ defmodule ExL7.AckTest do
             "PID|123^MR~456^AN|AttDoc^888^Ross&Bob~RefDoc^999^Hill&Bobby\r"
         )
 
-      ack_string = acknowledge(received)
+      ack_string = acknowledge(received, "asdf")
       {:ok, actual} = ExL7.parse(ack_string)
 
       assert query(actual, "MSH|2") == "ExL7"
@@ -52,7 +52,7 @@ defmodule ExL7.AckTest do
 
   describe "error" do
     test "generate app error hl7 no reason", context do
-      nak_string = error(context[:l7_message])
+      nak_string = error(context[:l7_message], "seq23")
       {:ok, actual} = ExL7.parse(nak_string)
 
       assert query(actual, "MSH|2") == "RandomApp"
@@ -61,7 +61,7 @@ defmodule ExL7.AckTest do
       assert query(actual, "MSH|5") == "iWT Health"
       assert query(actual, "MSH|7") == ""
       assert query(actual, "MSH|8") == "ACK^R01"
-      assert query(actual, "MSH|9") == "AF456"
+      assert query(actual, "MSH|9") == "seq23"
       assert query(actual, "MSH|10") == "T"
       assert query(actual, "MSH|11") == "2.4"
 
@@ -71,7 +71,7 @@ defmodule ExL7.AckTest do
     end
 
     test "generate app error hl7 with reason", context do
-      nak_string = error(context[:l7_message], "code broke")
+      nak_string = error(context[:l7_message], "sqcb", "code broke")
       {:ok, actual} = ExL7.parse(nak_string)
 
       assert query(actual, "MSA|1") == "AE"
@@ -82,7 +82,7 @@ defmodule ExL7.AckTest do
 
   describe "reject" do
     test "generate app reject hl7 no reason", context do
-      nak_string = reject(context[:l7_message])
+      nak_string = reject(context[:l7_message], "sq4")
       {:ok, actual} = ExL7.parse(nak_string)
 
       assert query(actual, "MSH|2") == "RandomApp"
@@ -91,7 +91,7 @@ defmodule ExL7.AckTest do
       assert query(actual, "MSH|5") == "iWT Health"
       assert query(actual, "MSH|7") == ""
       assert query(actual, "MSH|8") == "ACK^R01"
-      assert query(actual, "MSH|9") == "AF456"
+      assert query(actual, "MSH|9") == "sq4"
       assert query(actual, "MSH|10") == "T"
       assert query(actual, "MSH|11") == "2.4"
 
@@ -101,7 +101,7 @@ defmodule ExL7.AckTest do
     end
 
     test "generate app reject hl7 with reason", context do
-      nak_string = reject(context[:l7_message], "bad msh")
+      nak_string = reject(context[:l7_message], "seqbad", "bad msh")
       {:ok, actual} = ExL7.parse(nak_string)
 
       assert query(actual, "MSA|1") == "AR"
@@ -112,7 +112,7 @@ defmodule ExL7.AckTest do
 
   describe "other" do
     test "generate custom ack an hl7 with no reason", context do
-      nak_string = other(context[:l7_message], "AZ")
+      nak_string = other(context[:l7_message], "sqd5", "AZ")
       {:ok, actual} = ExL7.parse(nak_string)
 
       assert query(actual, "MSH|2") == "RandomApp"
@@ -121,7 +121,7 @@ defmodule ExL7.AckTest do
       assert query(actual, "MSH|5") == "iWT Health"
       assert query(actual, "MSH|7") == ""
       assert query(actual, "MSH|8") == "ACK^R01"
-      assert query(actual, "MSH|9") == "AF456"
+      assert query(actual, "MSH|9") == "sqd5"
       assert query(actual, "MSH|10") == "T"
       assert query(actual, "MSH|11") == "2.4"
 
@@ -131,7 +131,7 @@ defmodule ExL7.AckTest do
     end
 
     test "generate custom ack an hl7 with reason", context do
-      nak_string = other(context[:l7_message], "RR", "random response")
+      nak_string = other(context[:l7_message], "sqq6", "RR", "random response")
       {:ok, actual} = ExL7.parse(nak_string)
 
       assert query(actual, "MSA|1") == "RR"
