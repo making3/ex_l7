@@ -25,6 +25,18 @@ Elixir HL7 quick parsing, mapping, and manipulation library.
     # To return the original message
     "MSH|^....." = ExL7.Message.to_string(e_message)
 
+    # Acknowledgement Responses
+    ExL7.Ack.acknowledge(e_message)
+
+    ExL7.Ack.error(e_message)
+    ExL7.Ack.error(e_message, "reason")
+
+    ExL7.Ack.reject(e_message)
+    ExL7.Ack.reject(e_message, "reason")
+
+    ExL7.Ack.other(e_message, "AZ")
+    ExL7.Ack.other(e_message, "AZ", "other reason")
+
 ## Versioning
 
 Use [SemVer](http://semver.org/) for versioning. Still in development.

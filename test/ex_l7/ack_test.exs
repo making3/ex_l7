@@ -17,7 +17,7 @@ defmodule ExL7.AckTest do
 
   describe "ack" do
     test "generate ack hl7", context do
-      ack_string = ack(context[:l7_message])
+      ack_string = acknowledge(context[:l7_message])
       {:ok, actual} = ExL7.parse(ack_string)
 
       assert query(actual, "MSH|2") == "RandomApp"
@@ -42,7 +42,7 @@ defmodule ExL7.AckTest do
             "PID|123^MR~456^AN|AttDoc^888^Ross&Bob~RefDoc^999^Hill&Bobby\r"
         )
 
-      ack_string = ack(received)
+      ack_string = acknowledge(received)
       {:ok, actual} = ExL7.parse(ack_string)
 
       assert query(actual, "MSH|2") == "ExL7"

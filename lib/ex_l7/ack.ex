@@ -8,7 +8,7 @@ defmodule ExL7.Ack do
   @doc """
   Returns an HL7 acknowledgement message as a string
   """
-  def ack(%ExL7.Message{} = l7_message) do
+  def acknowledge(%ExL7.Message{} = l7_message) do
     get_ack_hl7(l7_message, "AA")
   end
 
