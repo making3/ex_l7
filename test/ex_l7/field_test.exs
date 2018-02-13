@@ -85,6 +85,20 @@ defmodule ExL7.FieldTest do
       actual = to_string(field, control_characters)
       assert actual == "111*2*65*MR_zz"
     end
+
+    test "multiple fields", context do
+      fields = [
+        %Field{
+          components: ["111", "2", "65", ["MR", "zz"]]
+        },
+        %Field{
+          components: ["blue", "orange", "no-sub"]
+        }
+      ]
+
+      actual = to_string(fields, context[:control_characters])
+      assert actual == ["111^2^65^MR&zz", "blue^orange^no-sub"]
+    end
   end
 
   describe "get_value" do

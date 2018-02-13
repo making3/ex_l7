@@ -1,11 +1,20 @@
 defmodule ExL7.Segment do
   @moduledoc """
-  Documentation for ExL7.Segment
+  Structure and Helper functions for a HL7 (ExL7.Message) segment.
   """
+
   defstruct fields: []
   alias ExL7.Field
   alias ExL7.Segment
 
+  @doc ~S"""
+  Returns an ExL7.Segment from a given list of strings.
+
+  ## Parameters
+
+  - segment_string: String that represents an HL7 segment.
+  - control_characters: ExL7.ControlCharacters used to parse fields, components, and sub components.
+  """
   def parse(segment_string, control_characters) do
     %Segment{fields: do_parse(segment_string, control_characters)}
   end
@@ -24,6 +33,13 @@ defmodule ExL7.Segment do
     end
   end
 
+  @doc ~S"""
+  Returns the ID of the segment, such as MSH, PID, and PV1.
+
+  ## Parameters
+
+  - segment: An ExL7.Segment.
+  """
   def get_id(segment) do
     # No need to pass in control_characters since the first field
     #   should be upper case 3 letters.
@@ -32,6 +48,14 @@ defmodule ExL7.Segment do
     |> Field.to_string(%ExL7.ControlCharacters{})
   end
 
+  @doc ~S"""
+  Returns a HL7 segment string from a single ExL7.Segment.
+
+  ## Parameters
+
+  - segment: An ExL7.Segment.
+  - control_characters: ExL7.ControlCharacters used to join fields, components, and sub components.
+  """
   def to_string(segment, control_characters) do
     segment.fields
     |> Enum.map(&get_field_string(&1, control_characters))

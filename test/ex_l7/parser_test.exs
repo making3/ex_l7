@@ -72,7 +72,6 @@ defmodule ExL7.ParserTest do
 
     test "get new ExL7.Message", context do
       {:ok, message} = parse(context[:hl7])
-      assert message.timezone == "UTC"
       assert length(message.segments) == 4
 
       msh_fields = Enum.at(message.segments, 0)
@@ -86,11 +85,6 @@ defmodule ExL7.ParserTest do
 
       obx2_fields = Enum.at(message.segments, 3)
       assert length(obx2_fields.fields) == 3
-    end
-
-    test "set timezone on ExL7 Message", context do
-      {:ok, result} = parse(context[:hl7], "\r", "America/Chicago")
-      assert result.timezone == "America/Chicago"
     end
   end
 end
