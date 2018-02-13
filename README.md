@@ -41,10 +41,6 @@ Elixir HL7 quick parsing, mapping, and manipulation library.
 
 Use [SemVer](http://semver.org/) for versioning. Still in development.
 
-## License
-
-TODO
-
 ## Acknowledgements
 
 - [medic/L7](https://github.com/medic/L7)
