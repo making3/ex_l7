@@ -47,4 +47,17 @@ defmodule ExL7 do
   def validate(hl7, segment_delimiter \\ "\r") do
     ExL7.Validation.validate(hl7, segment_delimiter)
   end
+
+  @doc """
+  Returns a value from an ExL7.Message using a ExL7 query string
+
+  ## Parameters
+
+  - message: An ExL7.Message map.
+  - query_string: ExL7 query string for retrieving a value.
+
+  """
+  def query(message, query_string, date_time_format \\ "TODO") do
+    ExL7.Query.query(message, query_string, date_time_format)
+  end
 end
