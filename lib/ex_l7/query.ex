@@ -1,7 +1,8 @@
 defmodule ExL7.Query do
   @moduledoc """
-  Documentation for ExL7.Query
+  ExL7.Message querying functions and structure.
   """
+
   alias ExL7.Segment
   alias ExL7.Field
   alias ExL7.Component
@@ -17,6 +18,15 @@ defmodule ExL7.Query do
             is_date: false,
             default_time: false
 
+  @doc """
+  Returns a value from an ExL7.Message using a ExL7 query string
+
+  ## Parameters
+
+  - message: An ExL7.Message map.
+  - query_string: ExL7 query string for retrieving a value.
+
+  """
   def query(message, query_string, _date_time_format \\ "TODO") do
     {:ok, query} = QueryParser.parse(query_string)
     query_segment(message, query)

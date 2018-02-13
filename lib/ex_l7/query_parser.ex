@@ -1,12 +1,16 @@
 defmodule ExL7.QueryParser do
-  alias ExL7.Query
-
   @moduledoc """
-  Documentation for ExL7.QueryParser
+  Helper functions to parse ExL7.Query strings.
   """
+
+  alias ExL7.Query
 
   @doc """
   Parses an l7_query query
+
+  ## Parameters
+
+  - l7_query: String query to find a value in an HL7 message.
 
   ## Examples
 
@@ -14,7 +18,6 @@ defmodule ExL7.QueryParser do
       {:error, "Invalid Query"}
 
   """
-
   def parse(l7_query) do
     ~r/^(?<date>@{0,2})(?<segment>\w{3})\|(?<field>\d+)(?:\^(?<component>\d+)(?:&(?<sub_component>\d+))?(?:\[(?<repeat>\d+)\])?)?$/
     |> Regex.named_captures(l7_query)
