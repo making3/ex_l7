@@ -10,12 +10,12 @@ defmodule ExL7.ControlCharacters do
             sub_component: "&"
 
   @doc ~S"""
-  Returns the control characters for an HL7 message
+  Returns the control characters for an HL7 message.
 
   ## Parameters
 
-  - hl7: The HL7 message or MSH header
-  - segment_delimiter: Character that separates HL7 segments, defaults to \\r
+  - hl7: The HL7 message or MSH header.
+  - segment_delimiter: Character that separates HL7 segments, defaults to \\r.
 
   ## Examples
     iex>ExL7.ControlCharacters.get_control_characters("MSH|^~\\&")

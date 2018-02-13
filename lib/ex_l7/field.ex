@@ -1,6 +1,6 @@
 defmodule ExL7.Field do
   @moduledoc """
-  Structure and Helper functions for a HL7 (ExL7.Message) field
+  Structure and Helper functions for a HL7 (ExL7.Message) field.
   """
 
   alias ExL7.Field
@@ -8,12 +8,12 @@ defmodule ExL7.Field do
   defstruct components: []
 
   @doc ~S"""
-  Returns an ExL7.Field from a given list of strings
+  Returns an ExL7.Field from a given list of strings.
 
   ## Parameters
 
   - field_strings: String or list of strings that represent an HL7 field.
-  - control_characters: ExL7.ControlCharacters used to parse components
+  - control_characters: ExL7.ControlCharacters used to parse components and sub components.
   """
   def parse(field_strings, control_characters) when is_list(field_strings) do
     Enum.map(field_strings, &parse(&1, control_characters))
@@ -43,7 +43,7 @@ defmodule ExL7.Field do
 
   ## Parameters
 
-  - fields: One or many ExL7.Field maps
+  - fields: One or many ExL7.Field maps.
   - control_characters: ExL7.ControlCharacters used to join fields, components, and sub components.
   """
   def to_string(fields, control_characters) when is_list(fields) do

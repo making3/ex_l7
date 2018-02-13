@@ -1,6 +1,6 @@
 defmodule ExL7.Component do
   @moduledoc """
-  Helper functions for components
+  Helper functions for components.
   """
 
   @doc ~S"""
@@ -9,7 +9,7 @@ defmodule ExL7.Component do
   ## Parameters
 
   - components: A string or string list of components.
-  - control_characters: ExL7.ControlCharacters used to join components
+  - control_characters: ExL7.ControlCharacters used to join components.
 
   ## Examples
 
