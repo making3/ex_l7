@@ -14,7 +14,7 @@ defmodule ExL7.Message do
 
   - message: ExL7 message to dump as a string
   """
-  def to_string(message) do
+  def to_string(%ExL7.Message{} = message) do
     hl7 =
       message.segments
       |> Enum.map(&Segment.to_string(&1, message.control_characters))

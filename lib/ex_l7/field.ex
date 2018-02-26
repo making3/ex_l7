@@ -51,7 +51,7 @@ defmodule ExL7.Field do
     |> Enum.map(&to_string(&1, control_characters))
   end
 
-  def to_string(field, control_characters) do
+  def to_string(%ExL7.Field{} = field, control_characters) do
     field.components
     |> Enum.map(&join_sub_components(&1, control_characters))
     |> Enum.join(control_characters.component)
@@ -65,7 +65,7 @@ defmodule ExL7.Field do
     sub_component
   end
 
-  def get_value(field, control_characters, query) do
+  def get_value(%ExL7.Field{} = field, control_characters, query) do
     get_component(field.components, query.component)
     |> get_sub_component(control_characters, query.sub_component)
   end
