@@ -6,8 +6,4 @@ defmodule ExL7.Ack.Config do
             message_event: "",
             processing_id: "D",
             version: "2.3"
-
-  def get_current_date_time() do
-    Timex.now() |> Timex.format!("{YYYY}{0M}{0D}{h24}{m}{s}")
-  end
 end
