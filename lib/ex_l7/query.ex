@@ -27,9 +27,21 @@ defmodule ExL7.Query do
   - query_string: ExL7 query string for retrieving a value.
 
   """
-  def query(%ExL7.Message{} = message, query_string, _date_time_format \\ "TODO") do
+  def query(%ExL7.Message{} = message, query_string, timezone \\ "Etc/UTC") do
     {:ok, query} = QueryParser.parse(query_string)
-    find_segment(message, query)
+    value = find_segment(message, query)
+
+    cond do
+      query.is_date ->
+        if query.default_time && String.length(value) == 8 do
+          value = value <> "000000"
+        end
+
+        ExL7.Date.convert(value, timezone)
+
+      true ->
+        value
+    end
   end
 
   defp find_segment(%ExL7.Message{} = message, %ExL7.Query{} = query) do
