@@ -18,55 +18,50 @@ defmodule ExL7.Date do
 
   ## Parameters
 
-  - date_time: HL7 string that represents a date time
-  - output_format: Timex string format to represent a date time format.
+  - datetime: HL7 string that represents a date time
+  - timezone: Timezone that the given date time is in
   """
-  def convert(date_time, timezone) do
-    cond do
-      String.length(date_time) == 8 ->
-        convert(date_time, timezone, "{YYYY}-{0M}-{0D}")
-
-      true ->
-        convert(date_time, timezone, "{YYYY}-{0M}-{0D} {h24}:{m}:{s}")
-    end
+  def convert(datetime, timezone \\ "UTC") do
+    try_convert(datetime, timezone, @input_formats)
   end
 
-  def convert(date_time, timezone, output_format) do
-    try_convert(date_time, timezone, output_format, @input_formats)
+  defp try_convert(datetime, _, []) do
+    datetime
   end
 
-  defp try_convert(date_time, _, _, []) do
-    date_time
-  end
-
-  defp try_convert(date_time, timezone, output_format, [input_format | input_formats]) do
-    case Timex.parse(date_time, input_format) do
-      {:ok, formatted_date_time} ->
-        to_normalized_format(formatted_date_time, timezone, output_format)
+  defp try_convert(datetime, timezone, [input_format | input_formats]) do
+    case Timex.parse(datetime, input_format) do
+      {:ok, formatted_datetime} ->
+        to_normalized_datetime(formatted_datetime, timezone)
 
       {:error, _} ->
-        try_convert(date_time, timezone, output_format, input_formats)
+        try_convert(datetime, timezone, input_formats)
     end
   end
 
-  defp to_normalized_format(%DateTime{} = date_time, _, output_format) do
-    date_time
-    |> Timex.Timezone.convert("UTC")
-    |> Timex.format!(output_format)
+  defp to_normalized_datetime(%DateTime{} = datetime, _) do
+    Timex.Timezone.convert(datetime, "UTC")
   end
 
-  defp to_normalized_format(%NaiveDateTime{} = date_time, timezone, output_format) do
-    date_time
+  defp to_normalized_datetime(%NaiveDateTime{} = datetime, timezone) do
+    datetime
     |> NaiveDateTime.to_erl()
     |> Timex.to_datetime(timezone)
     |> Timex.Timezone.convert("UTC")
-    |> Timex.format!(output_format)
+  end
+
+  def format(%DateTime{} = datetime, output_format) do
+    Timex.format!(datetime, output_format)
+  end
+
+  def format(invalid_datetime, _) do
+    invalid_datetime
   end
 
   @doc """
   Returns the current UTC date time in HL7 format (YYYYMMDDHHMMSS+0000)
   """
-  def get_current_date_time() do
+  def get_current_datetime() do
     Timex.now() |> to_hl7_string()
   end
 
@@ -77,7 +72,7 @@ defmodule ExL7.Date do
 
   - timezone: Timezone to create the date time in
   """
-  def get_current_date_time(timezone) do
+  def get_current_datetime(timezone) do
     Timex.now(timezone) |> to_hl7_string()
   end
 

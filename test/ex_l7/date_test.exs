@@ -6,22 +6,38 @@ defmodule ExL7.DateTest do
 
   describe "convert" do
     test "date only" do
-      actual = convert("20180202", "UTC")
+      actual =
+        "20180202"
+        |> convert()
+        |> format("{YYYY}-{0M}-{0D}")
+
       assert actual == "2018-02-02"
     end
 
     test "date with hour" do
-      actual = convert("2018020211", "UTC")
+      actual =
+        "2018020211"
+        |> convert()
+        |> format("{YYYY}-{0M}-{0D} {h24}:{m}:{s}")
+
       assert actual == "2018-02-02 11:00:00"
     end
 
     test "date with time" do
-      actual = convert("201802020119", "UTC")
+      actual =
+        "201802020119"
+        |> convert()
+        |> format("{YYYY}-{0M}-{0D} {h24}:{m}:{s}")
+
       assert actual == "2018-02-02 01:19:00"
     end
 
     test "date with timestamp" do
-      actual = convert("20180202011933", "UTC")
+      actual =
+        "20180202011933"
+        |> convert()
+        |> format("{YYYY}-{0M}-{0D} {h24}:{m}:{s}")
+
       assert actual == "2018-02-02 01:19:33"
     end
   end

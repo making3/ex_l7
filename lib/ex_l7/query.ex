@@ -27,20 +27,32 @@ defmodule ExL7.Query do
   - query_string: ExL7 query string for retrieving a value.
 
   """
-  def query(%ExL7.Message{} = message, query_string, timezone \\ "Etc/UTC") do
+  def query(%ExL7.Message{} = message, query_string, timezone \\ "UTC") do
     {:ok, query} = QueryParser.parse(query_string)
     value = find_segment(message, query)
 
     cond do
       query.is_date ->
         if query.default_time && String.length(value) == 8 do
-          value = value <> "000000"
+          format_datetime(value <> "000000", timezone)
+        else
+          format_datetime(value, timezone)
         end
-
-        ExL7.Date.convert(value, timezone)
 
       true ->
         value
+    end
+  end
+
+  defp format_datetime(value, timezone) do
+    if String.length(value) == 8 do
+      value
+      |> ExL7.Date.convert(timezone)
+      |> ExL7.Date.format("{YYYY}-{0M}-{0D}")
+    else
+      value
+      |> ExL7.Date.convert(timezone)
+      |> ExL7.Date.format("{YYYY}-{0M}-{0D} {h24}:{m}:{s}")
     end
   end
 
