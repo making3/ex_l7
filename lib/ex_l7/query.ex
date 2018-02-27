@@ -25,6 +25,7 @@ defmodule ExL7.Query do
 
   - message: An ExL7.Message map.
   - query_string: ExL7 query string for retrieving a value.
+  - timezone: Time zone string
 
   """
   def query(%ExL7.Message{} = message, query_string, timezone \\ "UTC") do
