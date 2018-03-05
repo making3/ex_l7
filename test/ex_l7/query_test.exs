@@ -168,7 +168,7 @@ defmodule ExL7.QueryTest do
       {:ok, parsed} =
         Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|20161202063024||ORU^R01|5555|T|2.4\rPID|1")
 
-      actual = query(parsed, "@MSH|6", "America/Chicago")
+      actual = query(parsed, "@MSH|6", {"America/Chicago"})
       assert actual == "2016-12-02 12:30:24"
     end
 
@@ -176,7 +176,7 @@ defmodule ExL7.QueryTest do
       {:ok, parsed} =
         Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|20160602063024||ORU^R01|5555|T|2.4\rPID|1")
 
-      actual = query(parsed, "@MSH|6", "America/Chicago")
+      actual = query(parsed, "@MSH|6", {"America/Chicago"})
       assert actual == "2016-06-02 11:30:24"
     end
 
@@ -198,14 +198,6 @@ defmodule ExL7.QueryTest do
 
       actual = query(parsed, "@MSH|6")
       assert actual == "2016-06-02 00:30:24"
-    end
-
-    test "2013-08-02 from @MSH|6 containing date only" do
-      {:ok, parsed} =
-        Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|20130802||ORU^R01|5555|T|2.4\rPID|1")
-
-      actual = query(parsed, "@MSH|6")
-      assert actual == "2013-08-02"
     end
 
     test "nothing from @MSH|4 containing no value" do
@@ -252,7 +244,7 @@ defmodule ExL7.QueryTest do
       {:ok, parsed} =
         Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|20160217||ORU^R01|5555|T|2.4\rPID||")
 
-      actual = query(parsed, "@@MSH|6", "America/Chicago")
+      actual = query(parsed, "@@MSH|6", {"America/Chicago"})
       assert actual == "2016-02-17 06:00:00"
     end
 
@@ -260,7 +252,7 @@ defmodule ExL7.QueryTest do
       {:ok, parsed} =
         Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|20160615||ORU^R01|5555|T|2.4\rPID||")
 
-      actual = query(parsed, "@@MSH|6", "America/Chicago")
+      actual = query(parsed, "@@MSH|6", {"America/Chicago"})
       assert actual == "2016-06-15 05:00:00"
     end
 

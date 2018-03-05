@@ -28,16 +28,18 @@ defmodule ExL7.Query do
   - timezone: Time zone string
 
   """
-  def query(%ExL7.Message{} = message, query_string, timezone \\ "UTC") do
+  def query(message, query_string, date_options \\ {"UTC", "{YYYY}-{0M}-{0D} {h24}:{m}:{s}"})
+
+  def query(%ExL7.Message{} = message, query_string, date_options) do
     {:ok, query} = QueryParser.parse(query_string)
     value = find_segment(message, query)
 
     cond do
       query.is_date ->
         if query.default_time && String.length(value) == 8 do
-          format_datetime(value <> "000000", timezone)
+          format_datetime(value <> "000000", date_options)
         else
-          format_datetime(value, timezone)
+          format_datetime(value, date_options)
         end
 
       true ->
@@ -45,16 +47,14 @@ defmodule ExL7.Query do
     end
   end
 
-  defp format_datetime(value, timezone) do
-    if String.length(value) == 8 do
-      value
-      |> ExL7.Date.convert(timezone)
-      |> ExL7.Date.format("{YYYY}-{0M}-{0D}")
-    else
-      value
-      |> ExL7.Date.convert(timezone)
-      |> ExL7.Date.format("{YYYY}-{0M}-{0D} {h24}:{m}:{s}")
-    end
+  defp format_datetime(value, {timezone}) do
+    format_datetime(value, {timezone, "{YYYY}-{0M}-{0D} {h24}:{m}:{s}"})
+  end
+
+  defp format_datetime(value, {timezone, format}) do
+    value
+    |> ExL7.Date.convert(timezone)
+    |> ExL7.Date.format(format)
   end
 
   defp find_segment(%ExL7.Message{} = message, %ExL7.Query{} = query) do
