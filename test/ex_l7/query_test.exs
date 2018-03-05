@@ -153,7 +153,7 @@ defmodule ExL7.QueryTest do
     end
   end
 
-  describe "query - datetime" do
+  describe "query - datetime (timezone)" do
     test "2015-09-12 11:05:38 from @MSH|6", context do
       actual = query(context[:parsed], "@MSH|6")
       assert actual == "2015-09-12 11:05:38"
@@ -263,7 +263,9 @@ defmodule ExL7.QueryTest do
       actual = query(parsed, "@@MSH|6")
       assert actual == "2016-01-24 00:00:00"
     end
+  end
 
+  describe "query - datetime (format)" do
     # test "2016/01/24 000000 from "20160127" with moment" do
     #     {:ok, parsed} = Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|20160124||ORU^R01|5555|T|2.4\rPID||")
     #     actual = query(parsed, "@MSH|6', 'YYYY/MM/DD HHmmss")
