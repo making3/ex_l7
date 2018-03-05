@@ -25,7 +25,7 @@ defmodule ExL7.Query do
 
   - message: An ExL7.Message map.
   - query_string: ExL7 query string for retrieving a value.
-  - timezone: Time zone string
+  - date_options: Tuple of two date options {inputTimestamp, format}
 
   """
   def query(message, query_string, date_options \\ {"UTC", "{YYYY}-{0M}-{0D} {h24}:{m}:{s}"})
