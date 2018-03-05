@@ -4,6 +4,7 @@ defmodule ExL7.QueryTest do
 
   import ExL7.Query
   alias ExL7.Parser
+  alias ExL7.Query.DateOptions
 
   setup do
     {:ok, parsed} =
@@ -168,7 +169,7 @@ defmodule ExL7.QueryTest do
       {:ok, parsed} =
         Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|20161202063024||ORU^R01|5555|T|2.4\rPID|1")
 
-      actual = query(parsed, "@MSH|6", {"America/Chicago"})
+      actual = query(parsed, "@MSH|6", %DateOptions{timezone: "America/Chicago"})
       assert actual == "2016-12-02 12:30:24"
     end
 
@@ -176,7 +177,7 @@ defmodule ExL7.QueryTest do
       {:ok, parsed} =
         Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|20160602063024||ORU^R01|5555|T|2.4\rPID|1")
 
-      actual = query(parsed, "@MSH|6", {"America/Chicago"})
+      actual = query(parsed, "@MSH|6", %DateOptions{timezone: "America/Chicago"})
       assert actual == "2016-06-02 11:30:24"
     end
 
@@ -244,7 +245,7 @@ defmodule ExL7.QueryTest do
       {:ok, parsed} =
         Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|20160217||ORU^R01|5555|T|2.4\rPID||")
 
-      actual = query(parsed, "@@MSH|6", {"America/Chicago"})
+      actual = query(parsed, "@@MSH|6", %DateOptions{timezone: "America/Chicago"})
       assert actual == "2016-02-17 06:00:00"
     end
 
@@ -252,7 +253,7 @@ defmodule ExL7.QueryTest do
       {:ok, parsed} =
         Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|20160615||ORU^R01|5555|T|2.4\rPID||")
 
-      actual = query(parsed, "@@MSH|6", {"America/Chicago"})
+      actual = query(parsed, "@@MSH|6", %DateOptions{timezone: "America/Chicago"})
       assert actual == "2016-06-15 05:00:00"
     end
 
@@ -268,20 +269,20 @@ defmodule ExL7.QueryTest do
   describe "query - datetime (format)" do
     # test "2016/01/24 000000 from "20160127" with moment" do
     #     {:ok, parsed} = Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|20160124||ORU^R01|5555|T|2.4\rPID||")
-    #     actual = query(parsed, "@MSH|6', 'YYYY/MM/DD HHmmss")
+    #     actual = query(parsed, "@MSH|6', "YYYY/MM/DD HHmmss")
     # 		assert actual == "2016/01/24 000000"
     # end
     #
     # test "2016/01/24 060000" from "20160127" with moment" do
     #     {:ok, parsed} = Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|20160124||ORU^R01|5555|T|2.4\rPID||")
-    #     actual = query(parsed, "@MSH|6', 'YYYY/MM/DD HHmmss")
+    #     actual = query(parsed, "@MSH|6', "YYYY/MM/DD HHmmss")
     # 		assert actual == "2016/01/24 000000"
     # end
     #
     #
     # test "2016/01/24 134056" from "20160127134056" with moment" do
     #     {:ok, parsed} = Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|20160124134056||ORU^R01|5555|T|2.4\rPID||")
-    #     actual = query(parsed, "@MSH|6', 'YYYY/MM/DD HHmmss")
+    #     actual = query(parsed, "@MSH|6', "YYYY/MM/DD HHmmss")
     # 		assert actual == "2016/01/24 134056"
     # end
     #
@@ -289,7 +290,7 @@ defmodule ExL7.QueryTest do
     #     {:ok, parsed} = Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|20160124134056||ORU^R01|5555|T|2.4\rPID||',
     #         '\r',
     #         'America/Chicago")
-    #     actual = query(parsed, "@MSH|6', 'YYYY/MM/DD HHmmss")
+    #     actual = query(parsed, "@MSH|6', "YYYY/MM/DD HHmmss")
     # 		assert actual == "2016/01/24 194056"
     # end
     #
@@ -297,7 +298,7 @@ defmodule ExL7.QueryTest do
     #     {:ok, parsed} = Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|20160124||ORU^R01|5555|T|2.4\rPID||',
     #         '\r',
     #         'America/Chicago")
-    #     actual = query(parsed, "@MSH|6', 'YYYY/MM/DD")
+    #     actual = query(parsed, "@MSH|6', "YYYY/MM/DD")
     # 		assert actual == "2016/01/24"
     # end
     #
@@ -305,7 +306,7 @@ defmodule ExL7.QueryTest do
     #     {:ok, parsed} = Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|20160124||ORU^R01|5555|T|2.4\rPID||',
     #         '\r',
     #         'Australia/Sydney")
-    #     actual = query(parsed, "@MSH|6', 'YYYY/MM/DD")
+    #     actual = query(parsed, "@MSH|6', "YYYY/MM/DD")
     # 		assert actual == "2016/01/24"
     # end
     #
@@ -313,7 +314,7 @@ defmodule ExL7.QueryTest do
     #     {:ok, parsed} = Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|201708140532||ORU^R01|5555|T|2.4\rPID||',
     #         '\r',
     #         'America/Chicago")
-    #     actual = query(parsed, "@MSH|6', 'YYYY/MM/DD HH:mm:ss")
+    #     actual = query(parsed, "@MSH|6', "YYYY/MM/DD HH:mm:ss")
     # 		assert actual == "2017/08/14 10:32:00"
     # end
     #
@@ -321,7 +322,7 @@ defmodule ExL7.QueryTest do
     #     {:ok, parsed} = Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|201708140532-0400||ORU^R01|5555|T|2.4\rPID||',
     #         '\r',
     #         'America/Chicago")
-    #     actual = query(parsed, "@MSH|6', 'YYYY/MM/DD HH:mm:ss")
+    #     actual = query(parsed, "@MSH|6', {""YYYY/MM/DD HH:mm:ss")
     # 		assert actual == "2017/08/14 09:32:00"
     # end
     #
@@ -329,14 +330,14 @@ defmodule ExL7.QueryTest do
     #     {:ok, parsed} = Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|2017081405||ORU^R01|5555|T|2.4\rPID||',
     #         '\r',
     #         'America/Chicago")
-    #     actual = query(parsed, "@MSH|6', 'YYYY/MM/DD HH:mm:ss").should.equal('2017/08/14 10:00:00")
+    #     actual = query(parsed, "@MSH|6', "YYYY/MM/DD HH:mm:ss").should.equal('2017/08/14 10:00:00")
     # end
     #
     # test "should return 2017-08-14 09:00:00 from 2017081405-0400 (missing minutes/seconds)" do
     #     {:ok, parsed} = Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|2017081405-0400||ORU^R01|5555|T|2.4\rPID||',
     #         '\r',
     #         'America/Chicago")
-    #     actual = query(parsed, "@MSH|6', 'YYYY/MM/DD HH:mm:ss").should.equal('2017/08/14 09:00:00")
+    #     actual = query(parsed, "@MSH|6', "YYYY/MM/DD HH:mm:ss").should.equal('2017/08/14 09:00:00")
     # end
   end
 end

@@ -3,17 +3,20 @@ defmodule ExL7.Query do
   ExL7.Message querying functions and structure.
   """
 
+  alias ExL7.Message
   alias ExL7.Segment
   alias ExL7.Field
   alias ExL7.Component
+  alias ExL7.Query
   alias ExL7.QueryParser
+  alias ExL7.Query.DateOptions
 
   defstruct all_segments: false,
             segment: "",
             repeat: -1,
             field: 0,
             component: -1,
-            component_match: %ExL7.Query.ComponentMatch{},
+            component_match: %Query.ComponentMatch{},
             sub_component: -1,
             is_date: false,
             default_time: false
@@ -25,12 +28,10 @@ defmodule ExL7.Query do
 
   - message: An ExL7.Message map.
   - query_string: ExL7 query string for retrieving a value.
-  - date_options: Tuple of two date options {inputTimestamp, format}
+  - date_options: ExL7.Query.DateOptions struct.
 
   """
-  def query(message, query_string, date_options \\ {"UTC", "{YYYY}-{0M}-{0D} {h24}:{m}:{s}"})
-
-  def query(%ExL7.Message{} = message, query_string, date_options) do
+  def query(%Message{} = message, query_string, %DateOptions{} = date_options \\ %DateOptions{}) do
     {:ok, query} = QueryParser.parse(query_string)
     value = find_segment(message, query)
 
@@ -47,17 +48,13 @@ defmodule ExL7.Query do
     end
   end
 
-  defp format_datetime(value, {timezone}) do
-    format_datetime(value, {timezone, "{YYYY}-{0M}-{0D} {h24}:{m}:{s}"})
-  end
-
-  defp format_datetime(value, {timezone, format}) do
+  defp format_datetime(value, %DateOptions{} = date_options) do
     value
-    |> ExL7.Date.convert(timezone)
-    |> ExL7.Date.format(format)
+    |> ExL7.Date.convert(date_options.timezone)
+    |> ExL7.Date.format(date_options.format)
   end
 
-  defp find_segment(%ExL7.Message{} = message, %ExL7.Query{} = query) do
+  defp find_segment(%Message{} = message, %ExL7.Query{} = query) do
     segments = match_segment(message.segments, query.segment)
 
     cond do
@@ -73,7 +70,7 @@ defmodule ExL7.Query do
     end)
   end
 
-  defp find_field(%ExL7.Message{} = message, %ExL7.Segment{} = segment, %ExL7.Query{} = query) do
+  defp find_field(%Message{} = message, %Segment{} = segment, %ExL7.Query{} = query) do
     case Enum.at(segment.fields, query.field) do
       nil ->
         ""
@@ -117,7 +114,7 @@ defmodule ExL7.Query do
     end
   end
 
-  defp find_component(%ExL7.Message{} = message, fields, %ExL7.Query{} = query)
+  defp find_component(%Message{} = message, fields, %ExL7.Query{} = query)
        when is_list(fields) do
     components = Enum.map(fields, &find_component(message, &1, query))
 
@@ -128,14 +125,14 @@ defmodule ExL7.Query do
     end
   end
 
-  defp find_component(%ExL7.Message{} = message, %ExL7.Field{} = field, %ExL7.Query{} = query) do
+  defp find_component(%Message{} = message, %Field{} = field, %ExL7.Query{} = query) do
     case Enum.at(field.components, query.component) do
       nil -> Field.to_string(field, message.control_characters)
       component -> find_sub_component(message, component, query)
     end
   end
 
-  defp find_sub_component(%ExL7.Message{} = message, component, %ExL7.Query{} = query) do
+  defp find_sub_component(%Message{} = message, component, %ExL7.Query{} = query) do
     if query.sub_component < 0 do
       Component.to_string(component, message.control_characters)
     else
