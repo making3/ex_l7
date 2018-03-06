@@ -48,6 +48,12 @@ defmodule ExL7.Query do
     end
   end
 
+  defp format_datetime(value, %DateOptions{ignore_timezone: true} = date_options) do
+    value
+    |> ExL7.Date.convert("")
+    |> ExL7.Date.format(date_options.format)
+  end
+
   defp format_datetime(value, %DateOptions{} = date_options) do
     value
     |> ExL7.Date.convert(date_options.timezone)

@@ -18,8 +18,8 @@ defmodule ExL7.Date do
 
   ## Parameters
 
-  - datetime: HL7 string that represents a date time
-  - timezone: Timezone that the given date time is in
+  - datetime: HL7 string that represents a date time.
+  - timezone: Timezone that the given date time is in.
   """
   def convert(datetime, timezone \\ "UTC") do
     try_convert(datetime, timezone, @input_formats)
@@ -39,8 +39,18 @@ defmodule ExL7.Date do
     end
   end
 
+  defp to_normalized_datetime(%DateTime{} = datetime, "") do
+    datetime
+  end
+
   defp to_normalized_datetime(%DateTime{} = datetime, _) do
     Timex.Timezone.convert(datetime, "UTC")
+  end
+
+  defp to_normalized_datetime(%NaiveDateTime{} = datetime, "") do
+    datetime
+    |> NaiveDateTime.to_erl()
+    |> Timex.to_datetime()
   end
 
   defp to_normalized_datetime(%NaiveDateTime{} = datetime, timezone) do
@@ -50,6 +60,19 @@ defmodule ExL7.Date do
     |> Timex.Timezone.convert("UTC")
   end
 
+  @doc """
+  Formats a date time based on a given Timex date time format.
+
+  ## Formatting Options
+
+  For formatting options, check out [Timex.DateTime.Formatters](https://hexdocs.pm/timex/Timex.Format.DateTime.Formatters.Default.html).
+
+  ## Parameters
+
+  - datetime: Given date time to format.
+  - output_format: Format string
+
+  """
   def format(%DateTime{} = datetime, output_format) do
     Timex.format!(datetime, output_format)
   end

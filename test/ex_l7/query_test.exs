@@ -317,15 +317,45 @@ defmodule ExL7.QueryTest do
       assert actual == "2016/01/24"
     end
 
-    # TODO: Fix
-    test "2016/01/24 from 20160124 with Sydney timezone" do
+    test "2016/01/24 from 20160124 with ignore_timezone" do
       {:ok, parsed} =
         Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|20160124||ORU^R01|5555|T|2.4\rPID||")
 
       actual =
         query(parsed, "@MSH|6", %DateOptions{
           format: "{YYYY}/{0M}/{0D}",
-          timezone: "Australia/Sydney"
+          timezone: "Australia/Sydney",
+          ignore_timezone: true
+        })
+
+      assert actual == "2016/01/24"
+    end
+
+    test "2016/01/24 from 20160124000433+0400 with ignore_timezone" do
+      {:ok, parsed} =
+        Parser.parse(
+          "MSH|^~\\&|ExL7|iWT Health||1|20160124000433+0400||ORU^R01|5555|T|2.4\rPID||"
+        )
+
+      actual =
+        query(parsed, "@MSH|6", %DateOptions{
+          format: "{YYYY}/{0M}/{0D}",
+          ignore_timezone: true
+        })
+
+      assert actual == "2016/01/24"
+    end
+
+    test "2016/01/24 from 20160124000433-0400 with ignore_timezone" do
+      {:ok, parsed} =
+        Parser.parse(
+          "MSH|^~\\&|ExL7|iWT Health||1|20160124000433-0400||ORU^R01|5555|T|2.4\rPID||"
+        )
+
+      actual =
+        query(parsed, "@MSH|6", %DateOptions{
+          format: "{YYYY}/{0M}/{0D}",
+          ignore_timezone: true
         })
 
       assert actual == "2016/01/24"
