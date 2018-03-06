@@ -5,9 +5,9 @@ defmodule ExL7.Date do
   @input_formats [
     "{YYYY}{0M}{0D}",
     "{YYYY}{0M}{0D}{h24}",
-    "{YYYY}{0M}{0D}{h24}ZZ",
+    "{YYYY}{0M}{0D}{h24}{Z}",
     "{YYYY}{0M}{0D}{h24}{m}",
-    "{YYYY}{0M}{0D}{h24}{m}ZZ",
+    "{YYYY}{0M}{0D}{h24}{m}{Z}",
     "{YYYY}{0M}{0D}{h24}{m}{s}",
     "{YYYY}{0M}{0D}{h24}{m}{s}{Z}",
     "{YYYY}{0M}{0D}{h24}{m}{s}{ss}{Z}"

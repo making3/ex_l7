@@ -267,77 +267,120 @@ defmodule ExL7.QueryTest do
   end
 
   describe "query - datetime (format)" do
-    # test "2016/01/24 000000 from "20160127" with moment" do
-    #     {:ok, parsed} = Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|20160124||ORU^R01|5555|T|2.4\rPID||")
-    #     actual = query(parsed, "@MSH|6', "YYYY/MM/DD HHmmss")
-    # 		assert actual == "2016/01/24 000000"
-    # end
-    #
-    # test "2016/01/24 060000" from "20160127" with moment" do
-    #     {:ok, parsed} = Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|20160124||ORU^R01|5555|T|2.4\rPID||")
-    #     actual = query(parsed, "@MSH|6', "YYYY/MM/DD HHmmss")
-    # 		assert actual == "2016/01/24 000000"
-    # end
-    #
-    #
-    # test "2016/01/24 134056" from "20160127134056" with moment" do
-    #     {:ok, parsed} = Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|20160124134056||ORU^R01|5555|T|2.4\rPID||")
-    #     actual = query(parsed, "@MSH|6', "YYYY/MM/DD HHmmss")
-    # 		assert actual == "2016/01/24 134056"
-    # end
-    #
-    # test "2016/01/24 134056" from "20160127134056" with moment and Chicago timezone" do
-    #     {:ok, parsed} = Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|20160124134056||ORU^R01|5555|T|2.4\rPID||',
-    #         '\r',
-    #         'America/Chicago")
-    #     actual = query(parsed, "@MSH|6', "YYYY/MM/DD HHmmss")
-    # 		assert actual == "2016/01/24 194056"
-    # end
-    #
-    # test "2016/01/24" from "20160124" with moment and Chicago timezone" do
-    #     {:ok, parsed} = Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|20160124||ORU^R01|5555|T|2.4\rPID||',
-    #         '\r',
-    #         'America/Chicago")
-    #     actual = query(parsed, "@MSH|6', "YYYY/MM/DD")
-    # 		assert actual == "2016/01/24"
-    # end
-    #
-    # test "2016/01/24" from "20160124" with moment and Sydney timezone" do
-    #     {:ok, parsed} = Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|20160124||ORU^R01|5555|T|2.4\rPID||',
-    #         '\r',
-    #         'Australia/Sydney")
-    #     actual = query(parsed, "@MSH|6', "YYYY/MM/DD")
-    # 		assert actual == "2016/01/24"
-    # end
-    #
-    # test "should return 2017-08-14 10:32:00 from 201708140532 (missing seconds)" do
-    #     {:ok, parsed} = Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|201708140532||ORU^R01|5555|T|2.4\rPID||',
-    #         '\r',
-    #         'America/Chicago")
-    #     actual = query(parsed, "@MSH|6', "YYYY/MM/DD HH:mm:ss")
-    # 		assert actual == "2017/08/14 10:32:00"
-    # end
-    #
-    # test "should return 2017-08-14 09:32:00 from 201708140532-0400 (missing seconds)" do
-    #     {:ok, parsed} = Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|201708140532-0400||ORU^R01|5555|T|2.4\rPID||',
-    #         '\r',
-    #         'America/Chicago")
-    #     actual = query(parsed, "@MSH|6', {""YYYY/MM/DD HH:mm:ss")
-    # 		assert actual == "2017/08/14 09:32:00"
-    # end
-    #
-    # test "should return 2017-08-14 10:00:00 from 2017081405 (missing minutes/seconds)" do
-    #     {:ok, parsed} = Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|2017081405||ORU^R01|5555|T|2.4\rPID||',
-    #         '\r',
-    #         'America/Chicago")
-    #     actual = query(parsed, "@MSH|6', "YYYY/MM/DD HH:mm:ss").should.equal('2017/08/14 10:00:00")
-    # end
-    #
-    # test "should return 2017-08-14 09:00:00 from 2017081405-0400 (missing minutes/seconds)" do
-    #     {:ok, parsed} = Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|2017081405-0400||ORU^R01|5555|T|2.4\rPID||',
-    #         '\r',
-    #         'America/Chicago")
-    #     actual = query(parsed, "@MSH|6', "YYYY/MM/DD HH:mm:ss").should.equal('2017/08/14 09:00:00")
-    # end
+    test "2016/01/24 000000 from 20160127" do
+      {:ok, parsed} =
+        Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|20160124||ORU^R01|5555|T|2.4\rPID||")
+
+      actual = query(parsed, "@MSH|6", %DateOptions{format: "{YYYY}/{0M}/{0D} {h24}{m}{s}"})
+      assert actual == "2016/01/24 000000"
+    end
+
+    test "2016/01/24 060000 from 20160127" do
+      {:ok, parsed} =
+        Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|20160124||ORU^R01|5555|T|2.4\rPID||")
+
+      actual = query(parsed, "@MSH|6", %DateOptions{format: "{YYYY}/{0M}/{0D} {h24}{m}{s}"})
+      assert actual == "2016/01/24 000000"
+    end
+
+    test "2016/01/24 134056 from 20160127134056" do
+      {:ok, parsed} =
+        Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|20160124134056||ORU^R01|5555|T|2.4\rPID||")
+
+      actual = query(parsed, "@MSH|6", %DateOptions{format: "{YYYY}/{0M}/{0D} {h24}{m}{s}"})
+      assert actual == "2016/01/24 134056"
+    end
+
+    test "2016/01/24 134056 from 20160127134056 with Chicago timezone" do
+      {:ok, parsed} =
+        Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|20160124134056||ORU^R01|5555|T|2.4\rPID||")
+
+      actual =
+        query(parsed, "@MSH|6", %DateOptions{
+          timezone: "America/Chicago",
+          format: "{YYYY}/{0M}/{0D} {h24}{m}{s}"
+        })
+
+      assert actual == "2016/01/24 194056"
+    end
+
+    test "2016/01/24 from 20160124 with Chicago timezone" do
+      {:ok, parsed} =
+        Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|20160124||ORU^R01|5555|T|2.4\rPID||")
+
+      actual =
+        query(parsed, "@MSH|6", %DateOptions{
+          format: "{YYYY}/{0M}/{0D}",
+          timezone: "America/Chicago"
+        })
+
+      assert actual == "2016/01/24"
+    end
+
+    # TODO: Fix
+    test "2016/01/24 from 20160124 with Sydney timezone" do
+      {:ok, parsed} =
+        Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|20160124||ORU^R01|5555|T|2.4\rPID||")
+
+      actual =
+        query(parsed, "@MSH|6", %DateOptions{
+          format: "{YYYY}/{0M}/{0D}",
+          timezone: "Australia/Sydney"
+        })
+
+      assert actual == "2016/01/24"
+    end
+
+    test "should return 2017-08-14 10:32:00 from 201708140532 (missing seconds)" do
+      {:ok, parsed} =
+        Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|201708140532||ORU^R01|5555|T|2.4\rPID||")
+
+      actual =
+        query(parsed, "@MSH|6", %DateOptions{
+          format: "{YYYY}/{0M}/{0D} {h24}:{m}:{s}",
+          timezone: "America/Chicago"
+        })
+
+      assert actual == "2017/08/14 10:32:00"
+    end
+
+    test "should return 2017-08-14 09:32:00 from 201708140532-0400 (missing seconds)" do
+      {:ok, parsed} =
+        Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|201708140532-0400||ORU^R01|5555|T|2.4\rPID||")
+
+      actual =
+        query(parsed, "@MSH|6", %DateOptions{
+          format: "{YYYY}/{0M}/{0D} {h24}:{m}:{s}",
+          timezone: "America/Chicago"
+        })
+
+      assert actual == "2017/08/14 09:32:00"
+    end
+
+    test "should return 2017-08-14 10:00:00 from 2017081405 (missing minutes/seconds)" do
+      {:ok, parsed} =
+        Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|2017081405||ORU^R01|5555|T|2.4\rPID||")
+
+      actual =
+        query(parsed, "@MSH|6", %DateOptions{
+          format: "{YYYY}/{0M}/{0D} {h24}:{m}:{s}",
+          timezone: "America/Chicago"
+        })
+
+      assert actual == "2017/08/14 10:00:00"
+    end
+
+    test "should return 2017-08-14 09:00:00 from 2017081405-0400 (missing minutes/seconds)" do
+      {:ok, parsed} =
+        Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|2017081405-0400||ORU^R01|5555|T|2.4\rPID||")
+
+      actual =
+        query(parsed, "@MSH|6", %DateOptions{
+          format: "{YYYY}/{0M}/{0D} {h24}:{m}:{s}",
+          timezone: "America/Chicago"
+        })
+
+      assert actual == "2017/08/14 09:00:00"
+    end
   end
 end
