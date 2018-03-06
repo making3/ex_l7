@@ -3,6 +3,9 @@ defmodule ExL7 do
   Lightweight HL7 parsing, validation, querying, and transformation library.
   """
 
+  alias ExL7.Message
+  alias ExL7.Query.DateOptions
+
   @doc ~S"""
   Parses an HL7 message into an ExL7.Message for ExL7 usage. Validates first.
     For validation examples, check ExL7.Validation.validate.
@@ -55,9 +58,10 @@ defmodule ExL7 do
 
   - message: An ExL7.Message map.
   - query_string: ExL7 query string for retrieving a value.
+  - date_options: ExL7.Query.DateOptions struct.
 
   """
-  def query(message, query_string, date_time_format \\ "TODO") do
-    ExL7.Query.query(message, query_string, date_time_format)
+  def query(%Message{} = message, query_string, %DateOptions{} = date_options \\ %DateOptions{}) do
+    ExL7.Query.query(message, query_string, date_options)
   end
 end

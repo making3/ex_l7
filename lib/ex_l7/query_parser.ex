@@ -88,12 +88,8 @@ defmodule ExL7.QueryParser do
   end
 
   defp fetch_date(query, matches) do
-    query = %{query | is_date: is_date_query(matches["date"])}
-    %{query | default_time: is_default_time(matches["date"])}
+    %{query | is_date: matches["date"] == "@"}
   end
-
-  defp is_date_query(match), do: match == "@" or match == "@@"
-  defp is_default_time(match), do: match == "@@"
 
   defp fetch_segment(query, segment) do
     %{query | segment: segment}

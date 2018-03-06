@@ -12,7 +12,6 @@ defmodule ExL7.QueryParserTest do
       assert query.segment == "PID"
       assert query.field == 1
       assert query.is_date == false
-      assert query.default_time == false
     end
 
     test "component" do
@@ -21,14 +20,12 @@ defmodule ExL7.QueryParserTest do
       assert query.field == 1
       assert query.component == 3
       assert query.is_date == false
-      assert query.default_time == false
     end
 
     test "component repetition" do
       {:ok, query} = parse("PID|1^0[3]")
       assert query.repeat == 3
       assert query.is_date == false
-      assert query.default_time == false
     end
   end
 
@@ -39,7 +36,6 @@ defmodule ExL7.QueryParserTest do
       assert query.segment == "PID"
       assert query.field == 1
       assert query.is_date == false
-      assert query.default_time == false
     end
 
     test "component" do
@@ -49,7 +45,6 @@ defmodule ExL7.QueryParserTest do
       assert query.field == 3
       assert query.component == 1
       assert query.is_date == false
-      assert query.default_time == false
     end
   end
 
@@ -62,7 +57,6 @@ defmodule ExL7.QueryParserTest do
       assert query.component == 0
       assert query.sub_component == 2
       assert query.is_date == false
-      assert query.default_time == false
     end
 
     test "repitition" do
@@ -74,7 +68,6 @@ defmodule ExL7.QueryParserTest do
       assert query.sub_component == 3
       assert query.repeat == 4
       assert query.is_date == false
-      assert query.default_time == false
     end
 
     test "match" do
@@ -85,7 +78,6 @@ defmodule ExL7.QueryParserTest do
       assert query.component == 7
       assert query.sub_component == 8
       assert query.is_date == false
-      assert query.default_time == false
     end
   end
 
@@ -98,7 +90,6 @@ defmodule ExL7.QueryParserTest do
       assert query.component_match.component == 4
       assert query.component_match.value == "MR"
       assert query.is_date == false
-      assert query.default_time == false
     end
 
     test "field with spaces" do
@@ -109,7 +100,6 @@ defmodule ExL7.QueryParserTest do
       assert query.component_match.component == 2
       assert query.component_match.value == "MR FIN"
       assert query.is_date == false
-      assert query.default_time == false
     end
 
     test "component" do
@@ -121,7 +111,6 @@ defmodule ExL7.QueryParserTest do
       assert query.component_match.value == "RN"
       assert query.component == 6
       assert query.is_date == false
-      assert query.default_time == false
     end
 
     test "component with spaces" do
@@ -133,7 +122,6 @@ defmodule ExL7.QueryParserTest do
       assert query.component_match.value == "MR OTHER SPACE"
       assert query.component == 8
       assert query.is_date == false
-      assert query.default_time == false
     end
   end
 
@@ -144,16 +132,6 @@ defmodule ExL7.QueryParserTest do
       assert query.segment == "PID"
       assert query.field == 1
       assert query.is_date == true
-      assert query.default_time == false
-    end
-
-    test "field default time" do
-      {:ok, query} = parse("@@PID|1")
-      assert query.all_segments == false
-      assert query.segment == "PID"
-      assert query.field == 1
-      assert query.is_date == true
-      assert query.default_time == true
     end
 
     test "component" do
@@ -163,17 +141,6 @@ defmodule ExL7.QueryParserTest do
       assert query.field == 2
       assert query.component == 2
       assert query.is_date == true
-      assert query.default_time == false
-    end
-
-    test "component default time" do
-      {:ok, query} = parse("@@PID|2^2")
-      assert query.all_segments == false
-      assert query.segment == "PID"
-      assert query.field == 2
-      assert query.component == 2
-      assert query.is_date == true
-      assert query.default_time == true
     end
 
     test "sub_component" do
@@ -184,18 +151,6 @@ defmodule ExL7.QueryParserTest do
       assert query.component == 22
       assert query.sub_component == 3
       assert query.is_date == true
-      assert query.default_time == false
-    end
-
-    test "sub_component default time" do
-      {:ok, query} = parse("@@PV1|3^22&0")
-      assert query.all_segments == false
-      assert query.segment == "PV1"
-      assert query.field == 3
-      assert query.component == 22
-      assert query.sub_component == 0
-      assert query.is_date == true
-      assert query.default_time == true
     end
 
     test "multi field" do
@@ -204,16 +159,6 @@ defmodule ExL7.QueryParserTest do
       assert query.segment == "PV1"
       assert query.field == 4
       assert query.is_date == true
-      assert query.default_time == false
-    end
-
-    test "multi field default time" do
-      {:ok, query} = parse("@@PV1[4]")
-      assert query.all_segments == true
-      assert query.segment == "PV1"
-      assert query.field == 4
-      assert query.is_date == true
-      assert query.default_time == true
     end
 
     test "multi component" do
@@ -223,17 +168,6 @@ defmodule ExL7.QueryParserTest do
       assert query.field == 5
       assert query.component == 6
       assert query.is_date == true
-      assert query.default_time == false
-    end
-
-    test "multi component default time" do
-      {:ok, query} = parse("@@PV1|5[6]")
-      assert query.all_segments == true
-      assert query.segment == "PV1"
-      assert query.field == 5
-      assert query.component == 6
-      assert query.is_date == true
-      assert query.default_time == true
     end
   end
 

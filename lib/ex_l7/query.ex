@@ -18,8 +18,9 @@ defmodule ExL7.Query do
             component: -1,
             component_match: %Query.ComponentMatch{},
             sub_component: -1,
-            is_date: false,
-            default_time: false
+            is_date: false
+
+  # default_time: false
 
   @doc """
   Returns a value from an ExL7.Message using a ExL7 query string
@@ -37,11 +38,12 @@ defmodule ExL7.Query do
 
     cond do
       query.is_date ->
-        if query.default_time && String.length(value) == 8 do
-          format_datetime(value <> "000000", date_options)
-        else
-          format_datetime(value, date_options)
-        end
+        # if query.default_time && String.length(value) == 8 do
+        #   format_datetime(value <> "000000", date_options)
+        # else
+        format_datetime(value, date_options)
+
+      # end
 
       true ->
         value

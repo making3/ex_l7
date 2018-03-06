@@ -241,27 +241,27 @@ defmodule ExL7.QueryTest do
       assert actual == "2016-04-02 00:30:00"
     end
 
-    test "2016-02-17 06:00:00 from @@MSH|6 with a date only and America/Chicago" do
+    test "2016-02-17 06:00:00 from @MSH|6 with a date only and America/Chicago" do
       {:ok, parsed} =
         Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|20160217||ORU^R01|5555|T|2.4\rPID||")
 
-      actual = query(parsed, "@@MSH|6", %DateOptions{timezone: "America/Chicago"})
+      actual = query(parsed, "@MSH|6", %DateOptions{timezone: "America/Chicago"})
       assert actual == "2016-02-17 06:00:00"
     end
 
-    test "2016-06-15 05:00:00 @@MSH|6 from date only and America/Chicago in DST" do
+    test "2016-06-15 05:00:00 @MSH|6 from date only and America/Chicago in DST" do
       {:ok, parsed} =
         Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|20160615||ORU^R01|5555|T|2.4\rPID||")
 
-      actual = query(parsed, "@@MSH|6", %DateOptions{timezone: "America/Chicago"})
+      actual = query(parsed, "@MSH|6", %DateOptions{timezone: "America/Chicago"})
       assert actual == "2016-06-15 05:00:00"
     end
 
-    test "2016-01-24 00:00:00 from @@MSH|6 and default timezone" do
+    test "2016-01-24 00:00:00 from @MSH|6 and default timezone" do
       {:ok, parsed} =
         Parser.parse("MSH|^~\\&|ExL7|iWT Health||1|20160124||ORU^R01|5555|T|2.4\rPID||")
 
-      actual = query(parsed, "@@MSH|6")
+      actual = query(parsed, "@MSH|6")
       assert actual == "2016-01-24 00:00:00"
     end
   end
