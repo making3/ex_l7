@@ -3,7 +3,7 @@ defmodule ExL7.Ack do
   Provides functions to generate HL7 acknowledgement messages
   """
 
-  import ExL7.Message.Header
+  alias ExL7.Message.Header
 
   @doc """
   Returns an HL7 acknowledgement message as a string
@@ -73,7 +73,7 @@ defmodule ExL7.Ack do
     Enum.join(
       [
         "MSH",
-        get_control_characters(ack_config.control_characters),
+        Header.get_control_characters(ack_config.control_characters),
         ack_config.sending_application,
         ack_config.sending_facility,
         "",
@@ -93,17 +93,17 @@ defmodule ExL7.Ack do
     Enum.join(
       [
         "MSH",
-        get_control_characters(l7_message),
-        get_application(l7_message),
-        get_facility(l7_message),
-        get_sending_application(l7_message),
-        get_sending_facility(l7_message),
+        Header.get_control_characters(l7_message),
+        get_receiving_application(l7_message),
+        get_receiving_facility(l7_message),
+        Header.get_sending_application(l7_message),
+        Header.get_sending_facility(l7_message),
         ExL7.Date.get_current_datetime(),
         "",
-        "ACK" <> l7_message.control_characters.component <> get_message_event(l7_message),
+        "ACK" <> l7_message.control_characters.component <> Header.get_message_event(l7_message),
         sequence,
-        get_processing_id(l7_message),
-        get_version(l7_message)
+        Header.get_processing_id(l7_message),
+        Header.get_version(l7_message)
       ],
       l7_message.control_characters.field
     )
@@ -126,15 +126,15 @@ defmodule ExL7.Ack do
       [
         "MSA",
         code,
-        get_control_id(l7_message),
+        Header.get_control_id(l7_message),
         reason
       ],
       l7_message.control_characters.field
     )
   end
 
-  defp get_application(l7_message) do
-    application = get_receiving_application(l7_message)
+  defp get_receiving_application(l7_message) do
+    application = Header.get_receiving_application(l7_message)
 
     if application == "" do
       "ExL7"
@@ -143,8 +143,8 @@ defmodule ExL7.Ack do
     end
   end
 
-  defp get_facility(l7_message) do
-    facility = get_receiving_facility(l7_message)
+  defp get_receiving_facility(l7_message) do
+    facility = Header.get_receiving_facility(l7_message)
 
     if facility == "" do
       "iWT Health"
