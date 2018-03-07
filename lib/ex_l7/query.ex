@@ -113,8 +113,7 @@ defmodule ExL7.Query do
     end
   end
 
-  defp find_component(%Message{} = message, fields, %ExL7.Query{} = query)
-       when is_list(fields) do
+  defp find_component(%Message{} = message, fields, %ExL7.Query{} = query) when is_list(fields) do
     components = Enum.map(fields, &find_component(message, &1, query))
 
     if query.repeat < 0 do
