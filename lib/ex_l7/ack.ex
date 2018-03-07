@@ -47,7 +47,7 @@ defmodule ExL7.Ack do
   end
 
   @doc """
-  Returns an HL7 negative acknowledgement message as a string with a custom code
+  Returns an HL7 acknowledgement message as a string with a custom code / reason.
   """
   def other(l7_message_or_ack_config, sequence, code, reason \\ "")
 
