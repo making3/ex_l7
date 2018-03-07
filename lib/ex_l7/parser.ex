@@ -22,7 +22,7 @@ defmodule ExL7.Parser do
   """
   def parse(hl7, segment_delimiter \\ "\r") do
     case validate(hl7, segment_delimiter) do
-      {:ok, _} ->
+      :ok ->
         do_parse(hl7, segment_delimiter)
 
       error_result = {:error, _} ->

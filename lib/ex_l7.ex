@@ -35,9 +35,6 @@ defmodule ExL7 do
       iex> ExL7.validate("MSH|")
       {:error, "Invalid Header"}
 
-      iex> ExL7.validate("MSH|")
-      {:error, "Invalid Header"}
-
       iex> ExL7.validate("MSH|^~\\&|ExL7|iWT Health||1|||ORU^R01||T|2.4")
       {:error, "No Segments Found"}
 
@@ -45,7 +42,7 @@ defmodule ExL7 do
       {:error, "Invalid Segment(s)"}
 
       iex> ExL7.validate("MSH|^~\\&|ExL7|iWT Health||1|||ORU^R01||T|2.4\rPID\rXFA")
-      {:ok, nil}
+      :ok
   """
   def validate(hl7, segment_delimiter \\ "\r") do
     ExL7.Validation.validate(hl7, segment_delimiter)

@@ -28,7 +28,7 @@ defmodule ExL7.Validation do
       {:error, "Invalid Segment(s)"}
 
       iex> ExL7.Validation.validate("MSH|^~\\&|ExL7|iWT Health||1|||ORU^R01||T|2.4\rPID\rXFA")
-      {:ok, nil}
+      :ok
 
   """
   def validate(hl7, segment_delimiter \\ "\r")
@@ -65,8 +65,7 @@ defmodule ExL7.Validation do
   end
 
   defp validate_segment(_, []) do
-    # TODO: Should something specific be returned? Segments maybe?
-    {:ok, nil}
+    :ok
   end
 
   defp validate_segment(segment_regex, [segment | remaining_segments]) do

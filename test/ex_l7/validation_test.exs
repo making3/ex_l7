@@ -37,7 +37,7 @@ defmodule ExL7.ValidationTest do
     end
 
     test "valid segments" do
-      expected = {:ok, nil}
+      expected = :ok
       assert validate("MSH|^~\\&|ExL7|iWT Health||1|||ORU^R01||T|2.4\rPID\rXFA") == expected
       assert validate("MSH|^~\\&|ExL7|iWT Health||1|||ORU^R01||T|2.4\rPID|") == expected
       assert validate("MSH:^~\\&:ExL7:iWT Health::1:::ORU^R01::T:2.4\rPID:") == expected
