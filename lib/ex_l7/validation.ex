@@ -21,9 +21,6 @@ defmodule ExL7.Validation do
       iex> ExL7.Validation.validate("MSH|")
       {:error, "Invalid Header"}
 
-      iex> ExL7.Validation.validate("MSH|")
-      {:error, "Invalid Header"}
-
       iex> ExL7.Validation.validate("MSH|^~\\&|ExL7|iWT Health||1|||ORU^R01||T|2.4")
       {:error, "No Segments Found"}
 
