@@ -11,9 +11,9 @@ defmodule ExL7.Ack.SequenceTest do
 
   test "sequence counter should increase" do
     {:ok, sequencer} = start_link()
-    num1 = String.slice(get_next(sequencer), -1..-1)
-    num2 = String.slice(get_next(sequencer), -1..-1)
+    sequence1 = String.slice(get_next(sequencer), -1..-1)
+    sequence2 = String.slice(get_next(sequencer), -1..-1)
 
-    assert num1 != num2
+    assert sequence1 != sequence2
   end
 end
