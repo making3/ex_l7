@@ -30,7 +30,6 @@ defmodule ExL7.Message.Header do
   end
 
   def get_date_time(%ExL7.Message{} = l7_message) do
-    # TODO: Date Time formatting
     query(l7_message, "MSH|6")
   end
 
